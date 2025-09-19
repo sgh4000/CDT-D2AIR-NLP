@@ -41,5 +41,5 @@ print("Class balance:", pd.Series(y).value_counts().to_dict())
 print(df_all.head())
 
 # Save to new csv file for future use
-df_all.to_csv("medicheck-processed.csv", index=False)
+df_all.to_csv("medicheck-preprocessed.csv", index=False)
 print("Saved processed dataset to medicheck-preprocessed.csv")
