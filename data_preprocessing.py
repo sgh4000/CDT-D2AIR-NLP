@@ -6,15 +6,9 @@ import pandas as pd
 
 
 # To run this script, please ensure you have downloaded the datasets:
-# medicheck-crowd.csv https://github.com/GavinAbercrombie/medical-safety/blob/main/data/medicheck-crowd.csv
 # medicheck-expert.csv https://github.com/GavinAbercrombie/medical-safety/blob/main/data/medicheck-expert.csv
 # medicheck-neg.csv https://github.com/GavinAbercrombie/medical-safety/blob/main/data/medicheck-neg.csv
 
-
-# Load crowd sourced medical dataset
-df_crowd = pd.read_csv("medicheck-crowd.csv", usecols=["query"])
-df_crowd["query"] = df_crowd["query"].astype(str).str.strip().str.strip('"').str.strip("'")
-df_crowd["label"] = 1
 
 # Load expert sourced medical dataset
 df_expert = pd.read_csv("medicheck-expert.csv", usecols=["query"])
@@ -29,7 +23,7 @@ df_neg = pd.DataFrame({"query": neg_queries})
 df_neg["label"] = 0
 
 # Combine to simple dataset
-df_all = pd.concat([df_crowd, df_expert, df_neg], ignore_index=True)
+df_all = pd.concat([df_expert, df_neg], ignore_index=True)
 
 # Prepare X,y for future embedding tasks
 X = df_all["query"].tolist()
