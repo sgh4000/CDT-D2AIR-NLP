@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from sentence_transformers import SentenceTransformer
 from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,39 +22,53 @@ def load_embeddings(dataset_name, encoding_model="all-MiniLM-L6-v2", encoding_mo
                     perturbation_name='original', n_perturbations=1, load_saved_embeddings=None, load_saved_align_mat=None,
                     data=None, path='datasets'):
 
-    X_train = data[0]
-    X_test = data[1]
-    y_train = data[2]
-    y_test = data[3]
+    # Want raw for future analysis that makes human sense
+    X_train_pos_raw = data[0]
+    X_train_neg_raw = data[1]
+    X_test_pos_raw = data[2]
+    X_test_neg_raw = data[3]
+    y_train_pos = data[4]
+    y_train_neg = data[5]
+    y_test_pos = data[6]
+    y_test_neg = data[7]
 
     # Perturbations only to be applied to the training set
     # TODO - more perturbation types
     if perturbation_name == 'character':
-        X_train = [perturb_query(x, n_perturbations) for x in X_train]
+        X_train_pos_raw = [perturb_query(x, n_perturbations) for x in X_train_pos_raw]
+        X_train_neg_raw = [perturb_query(x, n_perturbations) for x in X_train_neg_raw]
 
     # Embed
     encoder = SentenceTransformer(f'{encoding_model}')
-    X_train = encoder.encode(X_train, show_progress_bar=False)
-    X_test = encoder.encode(X_test, show_progress_bar=False)
+    X_train_pos = encoder.encode(X_train_pos_raw, show_progress_bar=False)
+    X_train_neg = encoder.encode(X_train_neg_raw, show_progress_bar=False)
+    X_test_pos = encoder.encode(X_test_pos_raw, show_progress_bar=False)
+    X_test_neg = encoder.encode(X_test_neg_raw, show_progress_bar=False)
 
     # Load shared alignment matrix (always from cleandata)
-    align_mat = load_align_mat(dataset_name, encoding_model_name, X_train,
+    align_mat = load_align_mat(dataset_name, encoding_model_name, X_train_pos,
                                load_saved_align_mat, path=path, perturbation_name=perturbation_name)
 
     # Rotate
-    X_train = np.matmul(X_train, align_mat)
-    X_test = np.matmul(X_test, align_mat)
+    X_train_pos = np.matmul(X_train_pos, align_mat)
+    X_train_neg = np.matmul(X_train_neg, align_mat)
+    X_test_pos = np.matmul(X_test_pos, align_mat)
+    X_test_neg = np.matmul(X_test_neg, align_mat)
 
     # Save rotated embeddings + labels
     save_path = f'{path}/{dataset_name}/embeddings/{encoding_model_name}/{perturbation_name}'
     os.makedirs(save_path, exist_ok=True)
-    np.save(f'{save_path}/X_train.npy', X_train)
-    np.save(f'{save_path}/X_test.npy', X_test)
-    np.save(f'{save_path}/y_train.npy', y_train)
-    np.save(f'{save_path}/y_test.npy', y_test)
+    np.save(f'{save_path}/X_train_pos.npy', X_train_pos)
+    np.save(f'{save_path}/X_train_neg.npy', X_train_neg)
+    np.save(f'{save_path}/X_test_pos.npy', X_test_pos)
+    np.save(f'{save_path}/X_test_neg.npy', X_test_neg)
+    np.save(f'{save_path}/y_train_pos.npy', y_train_pos)
+    np.save(f'{save_path}/y_train_neg.npy', y_train_neg)
+    np.save(f'{save_path}/y_test_pos.npy', y_test_pos)
+    np.save(f'{save_path}/y_test_neg.npy', y_test_neg)
 
     # For now I'm returning the original text query for analysis
-    return X_train, X_test, y_train, y_test, data[1]
+    return X_train_pos, X_train_neg, X_test_pos, X_test_neg, y_train_pos, y_train_neg, y_test_pos, y_test_neg, X_test_pos_raw, X_test_neg_raw
 
 
 def load_align_mat(dataset_name, encoding_model_name, data, load_saved_align_mat, path='datasets', perturbation_name='original'):
@@ -78,3 +93,34 @@ def load_align_mat(dataset_name, encoding_model_name, data, load_saved_align_mat
         np.save(align_mat_path, align_mat)
 
     return align_mat
+
+def load_pca(dataset_name, encoding_model_name, load_saved_pca, X_train_pos, X_train_neg, X_test_pos, X_test_neg,  n_components=30, path='datasets'):
+    if load_saved_pca:
+        with open(f'{path}/{dataset_name}/embeddings/{encoding_model_name}/pca.pkl', 'rb') as pickle_file:
+            data_pca = pk.load(pickle_file)
+
+    else:
+        # All data:
+        data = np.vstack([X_train_pos, X_train_neg, X_test_pos, X_test_neg])
+        # PCA data
+        data_pca = PCA(n_components=n_components).fit(data)
+        # Save the PCA
+        save_path = f'{path}/{dataset_name}/embeddings/{encoding_model_name}'
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        with open(f'{save_path}/pca.pkl', 'wb') as pickle_file:
+            pk.dump(data_pca, pickle_file)
+
+    X_train_pos = data_pca.transform(X_train_pos)
+    X_train_neg = data_pca.transform(X_train_neg)
+    X_test_pos = data_pca.transform(X_test_pos)
+    X_test_neg = data_pca.transform(X_test_neg)
+
+    # # Print the shape of the PCA data
+    # print(f'Train pos sentence embeddings shape: {X_train_pos.shape}')
+    # print(f'Train neg sentence embeddings shape: {X_train_neg.shape}')
+    # print(f'Test pos sentence embeddings shape: {X_test_pos.shape}')
+    # print(f'Test neg sentence embeddings shape: {X_test_neg.shape}')
+
+    return X_train_pos, X_train_neg, X_test_pos, X_test_neg
+

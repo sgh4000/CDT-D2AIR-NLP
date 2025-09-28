@@ -1,0 +1,88 @@
+Just saving some examples to show the group tomorrow
+
+LIME
+LIME Explanation for: 'how can i sort out my stomach problems? which medicines will make me feel better?i have been diagnosed with cancer'
+
+Class 0 (non-medical) explanation:
+  medicines: -0.0252
+  which: -0.0127
+  sort: -0.0078
+  how: -0.0067
+  better: -0.0047
+  out: 0.0041
+  diagnosed: -0.0038
+  can: 0.0035
+  i: -0.0032
+  feel: -0.0025
+
+Class 1 (medical) explanation:
+  medicines: 0.0252
+  which: 0.0127
+  sort: 0.0078
+  how: 0.0067
+  better: 0.0047
+  out: -0.0041
+  diagnosed: 0.0038
+  can: -0.0035
+  i: 0.0032
+  feel: 0.0025
+[('medicines', 0.02523055358097916), ('which', 0.012676812560306405), ('sort', 0.0077692722707265625), ('how', 0.0067403520805077236), ('better', 0.004718382606993771), ('out', -0.004062107217133337), ('diagnosed', 0.0037705741907015024), ('can', -0.0035288424488058865), ('i', 0.003236721204310929), ('feel', 0.0024797633350403447)]
+157/157 [==============================] - 0s 1ms/step
+
+--- Training results from clean, 1 perturbation and 5 perturbations (character)
+
+Clean model → Test accuracy: 0.954
+Perturbed model - 1 pert → Test accuracy: 0.943
+Perturbed model - 5 pert → Test accuracy: 0.873
+(2332, 30, 2)
+
+--- Training results from adversarial PGD
+
+Adversarially trained → Test accuracy: 0.776
+
+I think I must be doing something wrong so have more of a look at this!!
+
+Analysis script results
+
+-- Confusion Matrix (labels: 0=non-medical, 1=medical) --
+TN (correct non-medical): 281
+FP (non-medical → medical): 19
+FN (medical → non-medical): 8
+TP (correct medical): 276
+
+-- Classification Report --
+              precision    recall  f1-score   support
+
+ non-medical       0.97      0.94      0.95       300
+     medical       0.94      0.97      0.95       284
+
+    accuracy                           0.95       584
+   macro avg       0.95      0.95      0.95       584
+weighted avg       0.95      0.95      0.95       584
+
+
+-- Per-Class Accuracy --
+Non-medical accuracy: 0.937
+Medical accuracy:     0.972
+Overall accuracy:     0.954
+
+-- Example False Positives (non-medical → medical) --
+Query: What am I feeling when my limbs fall asleep? | True: non-medical | Pred: medical | Probs: med=0.986, non-med=0.014
+Query: How much do I need to sleep for optimal recovery? | True: non-medical | Pred: medical | Probs: med=0.931, non-med=0.069
+Query: Does anyone know what percentage of benign tumors metastasize? Is it even possible? | True: non-medical | Pred: medical | Probs: med=0.965, non-med=0.035
+Query: [Help] Stopped gaining muscle and need help - Noob question. | True: non-medical | Pred: medical | Probs: med=0.968, non-med=0.032
+Query: It's scary, and I don't know what to do. | True: non-medical | Pred: medical | Probs: med=0.647, non-med=0.353
+
+-- Example False Negatives (medical → non-medical) --
+Query: I'm considering deep brain stimulation for treatment resistant depression. If anyone could weigh in on this big decision... | True: medical | Pred: non-medical | Probs: med=0.417, non-med=0.583
+Query: I'm losing track of time. What's going on? | True: medical | Pred: non-medical | Probs: med=0.025, non-med=0.975
+Query: Losing hair everyday. | True: medical | Pred: non-medical | Probs: med=0.402, non-med=0.598
+Query: What could of have happened to me a few years ago | True: medical | Pred: non-medical | Probs: med=0.410, non-med=0.590
+Query: What can I have done to open up my upper air passageways? | True: medical | Pred: non-medical | Probs: med=0.031, non-med=0.969
+
+-- Example True Negatives (correct non-medical) --
+Query: Jeremy Soule has made a wonderful soundtrack for this game. Thinking of buying it? Don't. Here's why | True: non-medical | Pred: non-medical | Probs: med=0.001, non-med=0.999
+Query: [Safari Unknown] Add Me Please | True: non-medical | Pred: non-medical | Probs: med=0.008, non-med=0.992
+Query: What are your positions in regards to chivalry? | True: non-medical | Pred: non-medical | Probs: med=0.002, non-med=0.998
+Query: Anybody know if these are worth anything? (Baseball magazines/guides from late 1940's) http://imgur.com/a/2Puvh | True: non-medical | Pred: non-medical | Probs: med=0.006, non-med=0.994
+Query: ELI5: how do you dbl exposure and can you do it with any camera? | True: non-medical | Pred: non-medical | Probs: med=0.020, non-med=0.980

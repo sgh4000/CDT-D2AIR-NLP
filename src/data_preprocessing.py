@@ -1,20 +1,27 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import numpy as np
 
 def load_data():
-    # Simply load in the data from the medicheck-preprocessed.csv
-
+    # Load the data
     data = pd.read_csv('../data/medicheck-preprocessed.csv')
 
-    X = data["query"].tolist()
-    y = data["label"].values
+    X = np.array(data["query"].tolist()) 
+    y = np.array(data["label"].values)    
 
-    # Train/Test split, 80/20 seems sensible in both medical and non-medical classes
+    # Train/Test split, stratified
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    return [X_train, X_test, y_train, y_test]
+    # Split into positive and negative
+    X_train_pos, y_train_pos = X_train[y_train == 1], y_train[y_train == 1]
+    X_train_neg, y_train_neg = X_train[y_train == 0], y_train[y_train == 0]
+
+    X_test_pos, y_test_pos = X_test[y_test == 1], y_test[y_test == 1]
+    X_test_neg, y_test_neg = X_test[y_test == 0], y_test[y_test == 0]
+
+    return X_train_pos, X_train_neg, X_test_pos, X_test_neg, y_train_pos, y_train_neg, y_test_pos, y_test_neg
 
 def process_and_save_data():
 
@@ -53,3 +60,5 @@ def process_and_save_data():
 
     # Save to new csv file for future use
     df_all.to_csv("../data/medicheck-preprocessed.csv", index=False)
+
+    # TODO - I think Marco's paper did some advanced selection of which queries to use so look into this again
