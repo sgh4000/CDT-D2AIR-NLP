@@ -1,12 +1,13 @@
 import tensorflow as tf
 import numpy as np
 from data_preprocessing import load_data, process_and_save_data
-from embedding import load_embeddings
-from train import train_base
+from embedding import load_embeddings, load_pca
+from train import train_base, train_adversarial
 import pandas as pd
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+from hyperrectangles import load_hyperrectangles
 
 # Model as seen here: https://github.com/Tgl70/DAIR-course-NLP/blob/main/main.py
 def get_model(input_size):
@@ -73,55 +74,79 @@ if __name__ == '__main__':
 
     # Load clean and perturbed training sets
 
+    # TODO big cleanup of this code, e.g. other than X train there shouldn't need to be difference, avoid confusion and repition
+
     # Clean embeddings
-    X_train_o, X_test, y_train, y_test, raw_X_test = load_embeddings(
+    X_train_o_pos_embedding, X_train_o_neg_embedding, X_test_pos_embedding, X_test_neg_embedding,  y_train_pos_embedding, y_train_neg_embedding,  y_test_pos_embedding, y_test_neg_embedding, X_test_pos_raw, X_test_neg_raw = load_embeddings(
         dataset_name, encoding_model, encoding_model_name, "original",
         load_saved_embeddings=False, load_saved_align_mat=False, data=loaded_data, path=path
     )
 
     # Perturbed embeddings (training data perturbed, test data still clean) - 1 perturbation
-    X_train_p_1, _, y_train_p_1, _ , _= load_embeddings(
+    X_train_p_1_pos_embedding, X_train_p_1_neg_embedding, _,_, y_train_p_1_pos_embedding, y_train_p_1_neg_embedding, _ , _, _, _= load_embeddings(
         dataset_name, encoding_model, encoding_model_name, "character",n_perturbations=1,
         load_saved_embeddings=False, load_saved_align_mat=False, data=loaded_data, path=path
     )
 
     # Perturbed embeddings (training data perturbed, test data still clean) - 5 perturbations
-    X_train_p_5, _, y_train_p_5, _, _ = load_embeddings(
+    X_train_p_5_pos_embedding, X_train_p_5_neg_embedding, _,_, y_train_p_5_pos_embedding, y_train_p_5_neg_embedding, _ , _, _, _ = load_embeddings(
         dataset_name, encoding_model, encoding_model_name, "character",n_perturbations=5,
         load_saved_embeddings=False, load_saved_align_mat=False, data=loaded_data, path=path
     )
 
-    # Prepare datasets
-    y_train = np.ravel(y_train).astype(np.int32)
-    y_test = np.ravel(y_test).astype(np.int32)
-    y_train_p_1 = np.ravel(y_train_p_1).astype(np.int32)
-    y_train_p_5 = np.ravel(y_train_p_1).astype(np.int32)
+    load_saved_pca = False
+    n_components = 30
+    # Want to apply PCA to reduce the dimensionality, not strictly needed for NN but should be better for hyper rectangles and LIME to avoid spurious attributions
+    X_train_o_pos, X_train_o_neg, X_test_o_pos, X_test_o_neg = load_pca(dataset_name, encoding_model_name, load_saved_pca, X_train_o_pos_embedding, X_train_o_neg_embedding, X_test_pos_embedding, X_test_neg_embedding, n_components, path=path)
+    X_train_p_1_pos, X_train_p_1_neg, X_test_p_1_pos, X_test_p_1_neg = load_pca(dataset_name, encoding_model_name, load_saved_pca, X_train_p_1_pos_embedding, X_train_p_1_neg_embedding, X_test_pos_embedding, X_test_neg_embedding, n_components, path=path)
+    X_train_p_5_pos, X_train_p_5_neg, X_test_p_5_pos, X_test_p_5_neg = load_pca(dataset_name, encoding_model_name, load_saved_pca, X_train_p_5_pos_embedding, X_train_p_5_neg_embedding, X_test_pos_embedding, X_test_neg_embedding, n_components, path=path)
 
-    train_dataset_clean = tf.data.Dataset.from_tensor_slices((X_train_o, y_train)).shuffle(1024).batch(batch_size)
+    y_train_o = np.concatenate((y_train_pos_embedding, y_train_neg_embedding), axis=0)
+    y_test_o = np.concatenate((y_test_pos_embedding, y_test_neg_embedding), axis=0)
+
+    y_train_p_1 = np.concatenate((y_train_pos_embedding, y_train_neg_embedding), axis=0)
+    y_test_p_1 = np.concatenate((y_test_pos_embedding, y_test_neg_embedding), axis=0)
+
+    y_train_p_5 = np.concatenate((y_train_pos_embedding, y_train_neg_embedding), axis=0)
+    y_test_p_5 = np.concatenate((y_test_pos_embedding, y_test_neg_embedding), axis=0)
+
+    # Clean
+    X_train_o = np.concatenate((X_train_o_pos, X_train_o_neg), axis=0)
+    X_test_o  = np.concatenate((X_test_o_pos, X_test_o_neg), axis=0) 
+
+    # Perturbed - 1
+    X_train_p_1 = np.concatenate((X_train_p_1_pos, X_train_p_1_neg), axis=0)
+    X_test_p_1  = np.concatenate((X_test_p_1_pos, X_test_p_1_neg), axis=0)
+
+    # Perturbed - 5
+    X_train_p_5 = np.concatenate((X_train_p_5_pos, X_train_p_5_neg), axis=0)
+    X_test_p_5  = np.concatenate((X_test_p_5_pos, X_test_p_5_neg), axis=0)
+
+    train_dataset_clean = tf.data.Dataset.from_tensor_slices((X_train_o, y_train_o)).shuffle(1024).batch(batch_size)
     train_dataset_pert_1 = tf.data.Dataset.from_tensor_slices((X_train_p_1, y_train_p_1)).shuffle(1024).batch(batch_size)
     train_dataset_pert_5 = tf.data.Dataset.from_tensor_slices((X_train_p_5, y_train_p_5)).shuffle(1024).batch(batch_size)
-    test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(batch_size)
+    test_dataset = tf.data.Dataset.from_tensor_slices((X_test_o, y_test_o)).batch(batch_size)
 
     save_dataset_to_csv(test_dataset, "test_dataset.csv", class_names=["medical", "non-medical"])
 
     input_size = X_train_o.shape[1]
-
+    
     # Train model on clean data
     model_clean = get_model(input_size)
     model_clean.save("models/medical_query_clean.keras")
 
     model_clean = train_base(model_clean, train_dataset_clean, test_dataset, epochs, seed=42)
-    loss_c, acc_c = model_clean.evaluate(X_test, y_test, verbose=0)
+    loss_c, acc_c = model_clean.evaluate(X_test_o, y_test_o, verbose=0)
    
     # Train model on perturbed data - 1 perturbation
     model_pert_1 = get_model(input_size)
     model_pert_1 = train_base(model_pert_1, train_dataset_pert_1, test_dataset, epochs, seed=42)
-    loss_p_1, acc_p_1 = model_pert_1.evaluate(X_test, y_test, verbose=0)
+    loss_p_1, acc_p_1 = model_pert_1.evaluate(X_test_o, y_test_o, verbose=0)
     
     # Train model on perturbed data - 5 perturbations
     model_pert_5 = get_model(input_size)
     model_pert_5 = train_base(model_pert_5, train_dataset_pert_5, test_dataset, epochs, seed=42)
-    loss_p_5, acc_p_5 = model_pert_5.evaluate(X_test, y_test, verbose=0)
+    loss_p_5, acc_p_5 = model_pert_5.evaluate(X_test_o, y_test_o, verbose=0)
 
     # Save models so don't need to keep retraining
     model_clean.save("models/medical_query_clean")
@@ -132,8 +157,40 @@ if __name__ == '__main__':
     print(f"Perturbed model - 1 pert → Test accuracy: {acc_p_1:.3f}")
     print(f"Perturbed model - 5 pert → Test accuracy: {acc_p_5:.3f}")
 
-    # Saving test prediction data for future inspection
+    # Saving test prediction data for future inspection - TODO clean and do for perturbations/adversarially trained model
+    
+    X_test_combined = np.concatenate((X_test_o_pos, X_test_o_neg), axis=0)
+    y_test_combined = np.concatenate((y_test_pos_embedding, y_test_neg_embedding), axis=0)
+    raw_queries_combined = np.concatenate((X_test_pos_raw.ravel(), X_test_neg_raw.ravel()), axis=0)
 
-    save_test_predictions(model_clean, X_test, y_test, raw_X_test, "test_predictions_clean.csv", class_names)
-    save_test_predictions(model_pert_1, X_test, y_test, raw_X_test, "test_predictions_pert_1.csv", class_names)
-    save_test_predictions(model_pert_5, X_test, y_test, raw_X_test, "test_predictions_pert_5.csv", class_names)
+    save_test_predictions(model_clean, X_test_combined, y_test_combined, raw_queries_combined, "test_predictions_clean.csv", class_names)
+    #save_test_predictions(model_pert_1, X_test, y_test, raw_X_test, "test_predictions_pert_1.csv", class_names)
+    #save_test_predictions(model_pert_5, X_test, y_test, raw_X_test, "test_predictions_pert_5.csv", class_names)
+    
+    # Adversarial training - please note code credit to https://github.com/ANTONIONLP/ANTONIO/blob/main/src/example.py
+    
+    hyperrectangles_names = {'character': ['character']}
+  
+    hyperrectangles_name = "eps_cube"
+    load_saved_hyperrectangles = False
+    path = 'datasets'
+    load_saved_pca = False
+    n_components = 30
+
+    n_components = X_train_o.shape[1]
+    batch_size = 64
+    seed = 42
+    epochs = 30
+    pgd_steps = 5
+
+    n_samples = X_train_o.shape[1]
+    from_logits = False
+
+    hyperrectangles = load_hyperrectangles(dataset_name, encoding_model_name, hyperrectangles_name, load_saved_hyperrectangles, path=path)
+
+    model_adverse = get_model(n_components)
+    model_adverse = train_adversarial(model_adverse, train_dataset_clean, test_dataset, hyperrectangles, epochs, batch_size, n_samples, pgd_steps, seed=seed, from_logits=from_logits)
+    
+    loss_adverse, acc_adverse = model_adverse.evaluate(X_test_o, y_test_o, verbose=0)
+
+    print(f"\nAdversarially trained → Test accuracy: {acc_adverse:.3f}")
