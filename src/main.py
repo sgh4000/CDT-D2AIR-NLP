@@ -1,9 +1,7 @@
-#here I will place the imports
-import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-import csv
+from sklearn.decomposition import PCA
 #function to preprocess the raw data before embeddings
 def pre_process():
     #should read the data from the files, and begin extract the relevant strings and label them
@@ -44,10 +42,58 @@ def pre_process():
     Y_neg_class_test = test_neg['query-label-expert'].to_numpy()
 
     #return possibly  X_concat_strings_train, X_concat_strings_test, Y_concat_class_train, Y_concat_class_test
-    return X_pos_strings_train, X_pos_strings_test, X_neg_strings_train, X_neg_strings_test, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test
+    return X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test
 
 data = pre_process()
 for i in data:
-    print(i[:5])
+    print(i.shape)
 
+from sentence_transformers import SentenceTransformer
+
+#function which embeds as expected, and then also aligns according to SVD
+def embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test):
+    #embed all data - do I want to be able to switch this in and out?
+    encoder = SentenceTransformer(f'all-MiniLM-L6-v2')
+    X_pos_train_embed = encoder.encode(X_pos_strings_train, show_progress_bar=False)
+    X_neg_train_embed = encoder.encode(X_neg_strings_train, show_progress_bar=False)
+    X_pos_test_embed = encoder.encode(X_pos_strings_test, show_progress_bar=False)
+    X_neg_test_embed = encoder.encode(X_neg_strings_test, show_progress_bar=False)
+    #concat here or no?
+    
+    #SVD matrix found only on positive set (which is most important part of the data) of training set, but apply rotation to all data
+    #is there a better way to do SVD?
+    u, s, vh = np.linalg.svd(a=X_pos_train_embed)
+    align_matrix = np.linalg.solve(a=vh, b=np.eye(len(X_pos_train_embed[0])))
+
+    #perform alignments
+    X_pos_train_embed_align = np.matmul(X_pos_train_embed, align_matrix)
+    X_neg_train_embed_align = np.matmul(X_neg_train_embed, align_matrix)
+    X_pos_test_embed_align = np.matmul(X_pos_test_embed, align_matrix)
+    X_neg_test_embed_align = np.matmul(X_neg_test_embed, align_matrix)
+    return X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align
+
+X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
+embedded_and_aligned_data = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+for i in embedded_and_aligned_data:
+    print(i.shape)
+
+def PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align):
+    #input size was selected as 30, but wonder how this varies!
+    input_size = 30
+    #we want to add up all of the data in the training set and perform PCA on all of it (for some reason ANTONIO does test set too but isn't that data leakage?)
+    all_x_for_train = np.vstack([X_pos_train_embed_align, X_neg_train_embed_align])
+    # PCA data
+    data_pca = PCA(n_components=input_size).fit(all_x_for_train)
+
+    #transforms each bit separately
+    X_pos_train_PCA = data_pca.transform(X_pos_train_embed_align)
+    X_neg_train_PCA = data_pca.transform(X_neg_train_embed_align)
+    X_pos_test_PCA = data_pca.transform(X_pos_test_embed_align)
+    X_neg_test_PCA = data_pca.transform(X_neg_test_embed_align)
+    return X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA
+
+X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+PCA_data = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
+for i in PCA_data:
+    print(i.shape)
 
