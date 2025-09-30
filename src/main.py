@@ -197,10 +197,76 @@ def print_metrics(model, X_test, Y_test):
 
 
 X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
+# X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+# X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
+
+# get_model()
+# model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
+
+# print_metrics(model_base, X_base_test, Y_base_test)
+
+import random
+import lime
+from lime import lime_text
+from lime.lime_text import LimeTextExplainer
+
+#for LIME lets just play with X_pos_strings_train
+encoder = SentenceTransformer('all-MiniLM-L6-v2')
 X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
-
 get_model()
 model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
 
-print_metrics(model_base, X_base_test, Y_base_test)
+u, s, vh = np.linalg.svd(encoder.encode(X_pos_strings_train, show_progress_bar=False))
+align_matrix = np.linalg.solve(vh, np.eye(vh.shape[0]))
+pca = PCA(n_components=30).fit(np.vstack([X_pos_train_embed_align, X_neg_train_embed_align]))
+
+def predict_fn(texts):
+    """
+    texts: list of strings
+    returns: np.array of shape (len(texts), num_classes) with probabilities
+    """
+    # Embed
+    embeds = encoder.encode(texts, show_progress_bar=False)
+    
+    # Align embeddings (same as training)
+    embeds_align = np.matmul(embeds, align_matrix)
+    
+    # PCA transform
+    embeds_PCA = pca.transform(embeds_align)
+    
+    # Predict with model and convert logits to probabilities
+    logits = model_base.predict(embeds_PCA)
+    probs = tf.nn.softmax(logits, axis=1).numpy()
+    return probs
+
+
+# 1. Create a LIME explainer
+explainer = LimeTextExplainer(class_names = ['medical query', 'not medical query'])  # match your classes
+
+# 2. Pick a random index from X_base_test (or your test text array)
+# Pick a random index from the test text array, not the PCA embeddings
+random_idx = random.randint(0, len(X_pos_strings_test) - 1)
+example_text = X_pos_strings_test[random_idx]  # <-- raw string
+
+
+# 3. Generate explanation
+exp = explainer.explain_instance(
+    example_text,
+    predict_fn,        # your wrapped function that returns probabilities
+    num_features=10,   # number of words to show in explanation
+    top_labels=1       # only explain the top predicted class
+)
+
+# 4. Print the explanation for the predicted class
+predicted_class = np.argmax(predict_fn([example_text])[0])
+print(f"Random index: {random_idx}")
+print(f"Example text: {example_text}")
+print(f"Predicted class: {predicted_class}")
+print(f"Probability: {predict_fn([example_text])}")
+print("LIME explanation:", exp.as_list(label=predicted_class))
+exp_map = exp.as_map()[predicted_class]  
+exp.save_to_file('data/oi.html')
+
+
+
