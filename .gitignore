@@ -1,0 +1,12 @@
+*.html
+*.csv
+*.npy
+*.pyc
+*.DS_Store
+
+/src/datasets
+/src/saved_datasets
+/src/lime_explanations
+old
+/processed_embeddings
+/src/models
