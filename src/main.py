@@ -143,9 +143,64 @@ def train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_tes
     return model_base, X_train, X_test, Y_train, Y_test, train_dataset, test_dataset
 
 
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_curve, roc_auc_score
+from sklearn.preprocessing import label_binarize
+import matplotlib.pyplot as plt
+
+def print_metrics(model, X_test, Y_test):
+    # Get predicted probabilities for all classes
+    y_pred_prob = model.predict(X_test)
+
+    # Get predicted class labels (highest probability class)
+    y_pred_class = np.argmax(y_pred_prob, axis=1)
+
+    # Calculate precision, recall, and F1-score (using macro average)
+    precision = precision_score(Y_test, y_pred_class, average='macro')
+    recall = recall_score(Y_test, y_pred_class, average='macro')
+    f1 = f1_score(Y_test, y_pred_class, average='macro')
+
+    # Display the macro/micro/weighted average metrics
+    print(f'Precision (macro): {precision:.4f}')
+    print(f'Recall (macro): {recall:.4f}')
+    print(f'F1-score (macro): {f1:.4f}')
+
+    # # Binarize the output (needed for multiclass ROC)
+    # # This turns the class labels into a one-vs-rest binary format
+    # #here we only look at 2 classes but could add more
+    # y_test_bin = label_binarize(Y_test, classes=np.arange(2))
+
+    # # Compute ROC curve and AUC for each class
+    # fpr = dict()
+    # tpr = dict()
+    # roc_auc = dict()
+
+    # #here we only look at 2 classes but could add more
+    # for i in range(2):
+    #     fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_pred_prob[:, i])
+    #     roc_auc[i] = roc_auc_score(y_test_bin[:, i], y_pred_prob[:, i])
+
+    # # Plot the ROC curve for each class
+    # plt.figure(figsize=(6, 5))
+    # #here we only look at 2 classes but could add more
+    # for i in range(2):
+    #     plt.plot(fpr[i], tpr[i], label=f'Class {i} (AUC = {roc_auc[i]:.2f})')
+
+    # plt.plot([0, 1], [0, 1], 'k--')  # Dashed diagonal line
+    # plt.xlim([0.0, 1.0])
+    # plt.ylim([0.0, 1.0])
+    # plt.xlabel('False Positive Rate')
+    # plt.ylabel('True Positive Rate')
+    # plt.title('Receiver Operating Characteristic (ROC) for Each Class')
+    # plt.legend(loc='lower right')
+    # plt.show()
+    return 
+
+
 X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
 X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
 
 get_model()
-training_info = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
+model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
+
+print_metrics(model_base, X_base_test, Y_base_test)
