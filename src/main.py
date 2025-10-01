@@ -70,6 +70,24 @@ def embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test
     X_neg_train_embed_align = np.matmul(X_neg_train_embed, align_matrix)
     X_pos_test_embed_align = np.matmul(X_pos_test_embed, align_matrix)
     X_neg_test_embed_align = np.matmul(X_neg_test_embed, align_matrix)
+    return X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix
+
+#function which embeds as expected, and then also aligns according to SVD
+def embed_and_align_p(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test, align_matrix):
+    #embed all data - do I want to be able to switch this in and out?
+    encoder = SentenceTransformer(f'all-MiniLM-L6-v2')
+    X_pos_train_embed = encoder.encode(X_pos_strings_train, show_progress_bar=False)
+    X_neg_train_embed = encoder.encode(X_neg_strings_train, show_progress_bar=False)
+    X_pos_test_embed = encoder.encode(X_pos_strings_test, show_progress_bar=False)
+    X_neg_test_embed = encoder.encode(X_neg_strings_test, show_progress_bar=False)
+    #concat here or no?
+    
+
+    #perform alignments based on precomputed matrix
+    X_pos_train_embed_align = np.matmul(X_pos_train_embed, align_matrix)
+    X_neg_train_embed_align = np.matmul(X_neg_train_embed, align_matrix)
+    X_pos_test_embed_align = np.matmul(X_pos_test_embed, align_matrix)
+    X_neg_test_embed_align = np.matmul(X_neg_test_embed, align_matrix)
     return X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align
 
 # X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
@@ -90,7 +108,7 @@ def PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_
     X_neg_train_PCA = data_pca.transform(X_neg_train_embed_align)
     X_pos_test_PCA = data_pca.transform(X_pos_test_embed_align)
     X_neg_test_PCA = data_pca.transform(X_neg_test_embed_align)
-    return X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA
+    return X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca
 
 # X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 # PCA_data = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
@@ -196,8 +214,8 @@ def print_metrics(model, X_test, Y_test):
 
 
 X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
-X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
-X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
+X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix= embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca1 = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
 
 get_model()
 model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
@@ -263,8 +281,8 @@ def predict_fn(texts):
 
         #for LIME lets just play with X_pos_strings_train
     encoder = SentenceTransformer('all-MiniLM-L6-v2')
-    X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
-    X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
+    X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix = embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+    X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca_l = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
     get_model()
     model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset= train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
 
@@ -343,20 +361,40 @@ from perturbations import create_perturbations
 import nltk
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger_eng')
-print(X_pos_strings_train.shape)
-print(X_pos_strings_train[0])
+# print(X_pos_strings_train.shape)
+# print(X_pos_strings_train[0])
 
 X_train_pos_p, Y_train_pos_p, train_pos_index, X_train_neg_p, Y_train_neg_p, train_neg_index, X_test_pos_p, Y_test_pos_p, test_pos_index, X_test_neg_p, Y_test_neg_p, test_neg_index = create_perturbations(X_pos_strings_train, Y_pos_class_train, X_neg_strings_train, Y_neg_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_test, Y_neg_class_test, 'character')
 
-print(X_train_pos_p[0])
-print(Y_train_pos_p[0])
-print(train_pos_index[0])
-print(X_train_neg_p[0])
-print(Y_train_neg_p[0])
-print(train_neg_index[0])
-print(X_test_pos_p[0])
-print(Y_test_pos_p[0])
-print(test_pos_index[0])
-print(X_test_neg_p[0])
-print(Y_test_neg_p[0])
-print(test_neg_index[0])
+# print(X_train_pos_p[0])
+# print(Y_train_pos_p[0])
+# print(train_pos_index[0])
+# print(X_train_neg_p[0])
+# print(Y_train_neg_p[0])
+# print(train_neg_index[0])
+# print(X_test_pos_p[0])
+# print(Y_test_pos_p[0])
+# print(test_pos_index[0])
+# print(X_test_neg_p[0])
+# print(Y_test_neg_p[0])
+# print(test_neg_index[0])
+
+#need to embed these perturbed versions!
+Xp_pos_train_embed_align, Xp_pos_test_embed_align, Xp_neg_train_embed_align, Xp_neg_test_embed_align= embed_and_align_p(X_train_pos_p, X_train_neg_p, X_test_pos_p, X_test_neg_p, align_matrix)
+#PCA but with the same fit as used for non-perturbed data
+Xp_pos_train_PCA = data_pca1.transform(Xp_pos_train_embed_align)
+
+#print(train_pos_index[:10])
+#print("Expected indices:", list(range(len(X_pos_train_PCA))))
+
+
+
+from hyperrectangles import load_hyperrectangles
+hyperrectangles = load_hyperrectangles(X_pos_train_embed_align, X_pos_train_PCA, Xp_pos_train_embed_align, Xp_pos_train_PCA, train_pos_index)
+
+print("Number of hyperrectangles:", len(hyperrectangles))
+#print("Shape of first hyperrectangle:", hyperrectangles[0].shape)
+
+
+
+
