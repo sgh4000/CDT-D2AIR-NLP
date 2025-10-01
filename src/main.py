@@ -202,13 +202,13 @@ X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce
 get_model()
 model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
 #lets look at a few of these
-print(X_base_test.shape)
-logits = model_base.predict(X_base_test[799:800])
-prediction_probs = tf.nn.softmax(logits, axis=1).numpy()
-X_base_string_test = np.concatenate((X_pos_strings_test, X_neg_strings_test), axis=0)
-print("predictions shape:", prediction_probs.shape)
-print(X_base_string_test[799:800])
-print(prediction_probs)
+# print(X_base_test.shape)
+# logits = model_base.predict(X_base_test[799:800])
+# prediction_probs = tf.nn.softmax(logits, axis=1).numpy()
+# X_base_string_test = np.concatenate((X_pos_strings_test, X_neg_strings_test), axis=0)
+# print("predictions shape:", prediction_probs.shape)
+# print(X_base_string_test[799:800])
+# print(prediction_probs)
 #print_metrics(model_base, X_base_test, Y_base_test)
 
 import random
@@ -237,16 +237,6 @@ def LIME():
         top_labels=1       # only explain the top predicted class
     )
 
-    # 4. Print the explanation for the predicted class
-    # predicted_class = np.argmax(predict_fn([example_text])[0])
-    # print(f"Random index: {random_idx}")
-    # print(f"Example text: {example_text}")
-    # print(f"Predicted class: {predicted_class}")
-    # print(f"Probability: {predict_fn([example_text])}")
-    # print("LIME explanation:", exp.as_list(label=predicted_class))
-    # exp_map = exp.as_map()[predicted_class]  
-    # exp.save_to_file('data/oi.html')
-    # predicted class + probabilities
     probs = predict_fn([example_text])[0]
     predicted_class = np.argmax(probs)
 
@@ -301,6 +291,49 @@ def predict_fn(texts):
 
 
 #LIME()
+#using only positive training data, as is done in ANTONIO for the hyper rectangles
+def pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train):
+    #picking values based on Katya
+    epsilon = 0.05
+    alpha = 0.01
+    num_iter = 10
+    #makes another copy here
+    X_adv = tf.identity(X_pos_train_PCA)
+
+    # Iterate PGD for num_iter steps
+    for i in range(num_iter):
+        with tf.GradientTape() as tape:
+            tape.watch(X_adv)  # Watch x_adv for gradient computation
+            predictions = model_base(X_adv)  # Forward pass
+            loss = tf.keras.losses.sparse_categorical_crossentropy(Y_pos_class_train, predictions)  # Loss w.r.t. true label
+
+        # Compute the gradients of the loss w.r.t. the input
+        gradients = tape.gradient(loss, X_adv)
+        
+        # Perform gradient ascent step in the direction that maximizes the loss
+        perturbations = tf.sign(gradients)  # Use the sign of the gradients (FGSM-like step)
+        X_adv = X_adv + alpha * perturbations  # Update the adversarial example
+        
+        # Project the adversarial example to ensure it's within epsilon-ball of the original image
+        X_adv = tf.clip_by_value(X_adv, X_pos_train_PCA - epsilon, X_pos_train_PCA + epsilon)
+        
+        # Ensure the adversarial examples are within the valid input range [0, 1]
+        X_adv = tf.clip_by_value(X_adv, 0.0, 1.0)
+    
+    return X_adv
 
 
 
+X_adv_test = pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train)
+print(X_pos_train_PCA.shape)
+print(X_adv_test.shape)
+
+# Evaluate the model on the adversarial examples
+y_pred_adv = np.argmax(model_base.predict(X_adv_test), axis=1)
+accuracy_adv = np.mean(y_pred_adv == Y_pos_class_train)
+
+y_pred_train = np.argmax(model_base.predict(X_pos_train_PCA), axis=1)
+accuracy_train = np.mean(y_pred_train == Y_pos_class_train)
+
+print(f'Accuracy on adversarial examples: {accuracy_adv:.4f}')
+print(f'Accuracy on original positive only trained examples: {accuracy_train:.4f}')
