@@ -201,8 +201,14 @@ X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA = PCA_to_reduce
 
 get_model()
 model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
-
-
+#lets look at a few of these
+print(X_base_test.shape)
+logits = model_base.predict(X_base_test[799:800])
+prediction_probs = tf.nn.softmax(logits, axis=1).numpy()
+X_base_string_test = np.concatenate((X_pos_strings_test, X_neg_strings_test), axis=0)
+print("predictions shape:", prediction_probs.shape)
+print(X_base_string_test[799:800])
+print(prediction_probs)
 #print_metrics(model_base, X_base_test, Y_base_test)
 
 import random
