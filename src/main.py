@@ -324,16 +324,39 @@ def pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train):
 
 
 
-X_adv_test = pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train)
-print(X_pos_train_PCA.shape)
-print(X_adv_test.shape)
+# X_adv_test = pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train)
+# print(X_pos_train_PCA.shape)
+# print(X_adv_test.shape)
 
-# Evaluate the model on the adversarial examples
-y_pred_adv = np.argmax(model_base.predict(X_adv_test), axis=1)
-accuracy_adv = np.mean(y_pred_adv == Y_pos_class_train)
+# # Evaluate the model on the adversarial examples
+# y_pred_adv = np.argmax(model_base.predict(X_adv_test), axis=1)
+# accuracy_adv = np.mean(y_pred_adv == Y_pos_class_train)
 
-y_pred_train = np.argmax(model_base.predict(X_pos_train_PCA), axis=1)
-accuracy_train = np.mean(y_pred_train == Y_pos_class_train)
+# y_pred_train = np.argmax(model_base.predict(X_pos_train_PCA), axis=1)
+# accuracy_train = np.mean(y_pred_train == Y_pos_class_train)
 
-print(f'Accuracy on adversarial examples: {accuracy_adv:.4f}')
-print(f'Accuracy on original positive only trained examples: {accuracy_train:.4f}')
+# print(f'Accuracy on adversarial examples: {accuracy_adv:.4f}')
+# print(f'Accuracy on original positive only trained examples: {accuracy_train:.4f}')
+
+#lets now do perturbations to build the other hyper rectangles
+from perturbations import create_perturbations
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger_eng')
+print(X_pos_strings_train.shape)
+print(X_pos_strings_train[0])
+
+X_train_pos_p, Y_train_pos_p, train_pos_index, X_train_neg_p, Y_train_neg_p, train_neg_index, X_test_pos_p, Y_test_pos_p, test_pos_index, X_test_neg_p, Y_test_neg_p, test_neg_index = create_perturbations(X_pos_strings_train, Y_pos_class_train, X_neg_strings_train, Y_neg_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_test, Y_neg_class_test, 'character')
+
+print(X_train_pos_p[0])
+print(Y_train_pos_p[0])
+print(train_pos_index[0])
+print(X_train_neg_p[0])
+print(Y_train_neg_p[0])
+print(train_neg_index[0])
+print(X_test_pos_p[0])
+print(Y_test_pos_p[0])
+print(test_pos_index[0])
+print(X_test_neg_p[0])
+print(Y_test_neg_p[0])
+print(test_neg_index[0])
