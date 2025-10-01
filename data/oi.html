@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div8A9P7TAL0NLKJOT"></div>
+        <div class="lime top_div" id="top_divCOSZ8CIYK2VD3NE"></div>
         
         <script>
-        var top_div = d3.select('#top_div8A9P7TAL0NLKJOT').classed('lime top_div', true);
+        var top_div = d3.select('#top_divCOSZ8CIYK2VD3NE').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9922029972076416, 0.007797000929713249]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.971355676651001, 0.028644323348999023]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["lymph", 0.07725420459276856], ["pain", 0.07145963461698536], ["flu", 0.06931692632766356], ["caused", 0.03649890472746287], ["relieve", 0.02809427291696589], ["What", 0.020233904733363554], ["by", 0.0078946458030522], ["will", 0.006393287549519158], ["nodes", 0.005270378328792554], ["in", 0.000974655952474359]], 0, exp_div);
+                exp.show([["vitamin", 0.5248743403880751], ["long", 0.24043500381908253], ["help", 0.18444582300407747], ["How", 0.16112892892939729], ["should", 0.10751232181443837], ["d", 0.05355364925937006]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["lymph", 26, 0.07725420459276856], ["pain", 18, 0.07145963461698536], ["flu", 48, 0.06931692632766356], ["caused", 38, 0.03649890472746287], ["relieve", 10, 0.02809427291696589], ["What", 0, 0.020233904733363554], ["by", 45, 0.0078946458030522], ["will", 5, 0.006393287549519158], ["nodes", 32, 0.005270378328792554], ["in", 23, 0.000974655952474359]], 0, "What will relieve pain in lymph nodes caused by flu?", raw_div, true);
+            exp.show_raw_text([["vitamin", 16, 0.5248743403880751], ["long", 4, 0.24043500381908253], ["help", 26, 0.18444582300407747], ["How", 0, 0.16112892892939729], ["should", 9, 0.10751232181443837], ["d", 24, 0.05355364925937006]], 0, "How long should vitamin d help?", raw_div, true);
             
         </script>
         </body></html>
