@@ -19,19 +19,26 @@ from explainability import lime_test, make_predict_fn
 from pgd_attack import pgd_attack_embedded, pgd_attack_embedded_hyperrectangles
 from perturbations import create_perturbations
 from hyperrectangles import load_hyperrectangles
-from visualise import tsne_display, UMAP_display
+from visualise import tsne_display, UMAP_display, data_balance_display, print_cosine_sim_demo
 import nltk
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger_eng')
 import time
 
 X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
+
+data_balance_display(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+
 X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix= embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 
+Vis_X_train_string = np.concatenate((X_pos_strings_train, X_neg_strings_train), axis=0)
 Vis_X_train_embed_align = np.concatenate((X_pos_train_embed_align, X_neg_train_embed_align), axis=0)
 Vis_X_test_embed_align = np.concatenate((X_pos_test_embed_align, X_neg_test_embed_align), axis=0)
 Vis_Y_train = np.concatenate((Y_pos_class_train, Y_neg_class_train), axis=0)
 Vis_Y_test = np.concatenate((Y_pos_class_test, Y_neg_class_test), axis=0)
+
+print_cosine_sim_demo(Vis_X_train_embed_align, Vis_X_train_string, Vis_Y_train)
+
 tsne_title1 = "T-SNE of training data after embeddings and SVD"
 tsne_display(Vis_X_train_embed_align, Vis_Y_train, tsne_title1)
 umap_title1 = "UMAP of training data after embeddings and SVD"
@@ -46,9 +53,10 @@ tsne_display(Vis_X_train_PCA, Vis_Y_train, tsne_title2)
 umap_title2 = "UMAP of training data after PCA"
 UMAP_display(Vis_X_train_PCA, Vis_Y_train, umap_title2)
 
+
 get_model()
 model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
-tsne_display(X, y)
+
 
 #lets look at a few of these
 # print(X_base_test.shape)
