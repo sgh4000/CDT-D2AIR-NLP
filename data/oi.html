@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divYC822JF3P644CM2"></div>
+        <div class="lime top_div" id="top_divBM0W8ATKJ07M7LR"></div>
         
         <script>
-        var top_div = d3.select('#top_divYC822JF3P644CM2').classed('lime top_div', true);
+        var top_div = d3.select('#top_divBM0W8ATKJ07M7LR').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.8933250904083252, 0.10667502135038376]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.15464258193969727, 0.845357358455658]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["cialis", 0.42789240124410877], ["Concerned", 0.30628275907535], ["junk", -0.24199747119965], ["using", 0.17838283938149493], ["have", 0.1523327842718951], ["damaged", 0.09932134340042117], ["I", -0.07602233297082814], ["may", 0.07336628609017071], ["my", 0.03665306516458439], ["by", 0.01801629132066825]], 0, exp_div);
+                exp.show([["psychiatrist", -0.22469521655232974], ["you", 0.08855202397439967], ["this", -0.06159051845096989], ["What", 0.04325328768323112], ["about", 0.033767723780685176], ["think", 0.025607011349821802], ["do", 0.011888987079474306]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["cialis", 46, 0.42789240124410877], ["Concerned", 0, 0.30628275907535], ["junk", 32, -0.24199747119965], ["using", 40, 0.17838283938149493], ["have", 16, 0.1523327842718951], ["damaged", 21, 0.09932134340042117], ["I", 10, -0.07602233297082814], ["may", 12, 0.07336628609017071], ["my", 29, 0.03665306516458439], ["by", 37, 0.01801629132066825]], 0, "Concerned I may have damaged my junk by using cialis", raw_div, true);
+            exp.show_raw_text([["psychiatrist", 29, -0.22469521655232974], ["you", 8, 0.08855202397439967], ["this", 24, -0.06159051845096989], ["What", 0, 0.04325328768323112], ["about", 18, 0.033767723780685176], ["think", 12, 0.025607011349821802], ["do", 5, 0.011888987079474306]], 1, "What do you think about this psychiatrist?", raw_div, true);
             
         </script>
         </body></html>
