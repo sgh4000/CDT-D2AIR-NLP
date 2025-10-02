@@ -19,7 +19,7 @@ from explainability import lime_test, make_predict_fn
 from pgd_attack import pgd_attack_embedded, pgd_attack_embedded_hyperrectangles
 from perturbations import create_perturbations
 from hyperrectangles import load_hyperrectangles
-from visualise import tsne_display, UMAP_display, data_balance_display, print_cosine_sim_demo
+from visualise import tsne_display, UMAP_display, data_balance_display, print_cosine_sim_demo, print_silhouette_score, UMAP_investigate
 import nltk
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger_eng')
@@ -37,12 +37,14 @@ Vis_X_test_embed_align = np.concatenate((X_pos_test_embed_align, X_neg_test_embe
 Vis_Y_train = np.concatenate((Y_pos_class_train, Y_neg_class_train), axis=0)
 Vis_Y_test = np.concatenate((Y_pos_class_test, Y_neg_class_test), axis=0)
 
+print_silhouette_score(Vis_X_train_embed_align)
 print_cosine_sim_demo(Vis_X_train_embed_align, Vis_X_train_string, Vis_Y_train)
 
 tsne_title1 = "T-SNE of training data after embeddings and SVD"
 tsne_display(Vis_X_train_embed_align, Vis_Y_train, tsne_title1)
 umap_title1 = "UMAP of training data after embeddings and SVD"
-UMAP_display(Vis_X_train_embed_align, Vis_Y_train, umap_title1)
+UMAP_output = UMAP_display(Vis_X_train_embed_align, Vis_Y_train, umap_title1)
+UMAP_investigate(UMAP_output, Vis_X_train_string, Vis_Y_train)
 
 X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca1 = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
 
