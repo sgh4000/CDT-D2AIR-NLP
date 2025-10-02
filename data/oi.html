@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divCOSZ8CIYK2VD3NE"></div>
+        <div class="lime top_div" id="top_div90BJ2D01XJ0UY4V"></div>
         
         <script>
-        var top_div = d3.select('#top_divCOSZ8CIYK2VD3NE').classed('lime top_div', true);
+        var top_div = d3.select('#top_div90BJ2D01XJ0UY4V').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.971355676651001, 0.028644323348999023]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9960739016532898, 0.003926095087081194]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["vitamin", 0.5248743403880751], ["long", 0.24043500381908253], ["help", 0.18444582300407747], ["How", 0.16112892892939729], ["should", 0.10751232181443837], ["d", 0.05355364925937006]], 0, exp_div);
+                exp.show([["Abscess", 0.4975314831830531], ["Anal", 0.2342765536419641], ["what", 0.08129479510474322], ["need", 0.06624517052034462], ["I", 0.05589856116126865], ["do", 0.05510389773436571], ["to", 0.04593615527178571]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["vitamin", 16, 0.5248743403880751], ["long", 4, 0.24043500381908253], ["help", 26, 0.18444582300407747], ["How", 0, 0.16112892892939729], ["should", 9, 0.10751232181443837], ["d", 24, 0.05355364925937006]], 0, "How long should vitamin d help?", raw_div, true);
+            exp.show_raw_text([["Abscess", 5, 0.4975314831830531], ["Anal", 0, 0.2342765536419641], ["what", 14, 0.08129479510474322], ["need", 24, 0.06624517052034462], ["I", 22, 0.05589856116126865], ["do", 19, 0.05510389773436571], ["do", 32, 0.05510389773436571], ["to", 29, 0.04593615527178571]], 0, "Anal Abscess, what do I need to do?", raw_div, true);
             
         </script>
         </body></html>
