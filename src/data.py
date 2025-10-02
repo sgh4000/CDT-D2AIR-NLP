@@ -99,3 +99,5 @@ def PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_
     X_pos_test_PCA = data_pca.transform(X_pos_test_embed_align)
     X_neg_test_PCA = data_pca.transform(X_neg_test_embed_align)
     return X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca
+
+    
