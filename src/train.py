@@ -39,7 +39,7 @@ def train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_tes
     train_dataset = train_dataset.shuffle(buffer_size=1024).batch(batch_size)
     test_dataset = test_dataset.batch(batch_size)
     
-    optimizer = tf.keras.optimizers.Adam()
+    optimizer = tf.keras.optimizers.legacy.Adam()
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     accuracy_fn = tf.keras.metrics.SparseCategoricalAccuracy()
 
@@ -68,7 +68,7 @@ def adversarial_training(model_adv, train_base_dataset, test_base_dataset):
     model: The trained model.
     """
     epochs = 30
-    optimizer = tf.keras.optimizers.Adam()
+    optimizer = tf.keras.optimizers.legacy.Adam()
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
     for epoch in range(epochs):
@@ -128,7 +128,7 @@ def adv_hyperrectangles_training(model, train_dataset, test_dataset, hyperrectan
         tf.random.set_seed(seed)
         np.random.seed(seed)
 
-    optimizer = keras.optimizers.Adam()
+    optimizer = keras.optimizers.legacy.Adam()
     ce_batch_loss = keras.losses.SparseCategoricalCrossentropy(from_logits=from_logits)
     pgd_batch_loss = keras.losses.SparseCategoricalCrossentropy(from_logits=from_logits)
     pgd_attack_single_image_loss = keras.losses.SparseCategoricalCrossentropy(from_logits=from_logits)

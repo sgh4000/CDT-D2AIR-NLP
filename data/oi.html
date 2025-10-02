@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divXXPJH0I7OYZ0AR2"></div>
+        <div class="lime top_div" id="top_divNYV0S5WXMA3BN7C"></div>
         
         <script>
-        var top_div = d3.select('#top_divXXPJH0I7OYZ0AR2').classed('lime top_div', true);
+        var top_div = d3.select('#top_divNYV0S5WXMA3BN7C').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9956089854240417, 0.004391037859022617]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.993864893913269, 0.0061351521871984005]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["disorder", 0.1876025737261375], ["Experienced", 0.13243813914111527], ["odd", 0.11671434508542397], ["Sleep", 0.0924668521890993], ["last", 0.055897551782313794], ["something", 0.04553473822007592], ["night", 0.03355443691476872]], 0, exp_div);
+                exp.show([["diarrhea", 0.07951460385058202], ["stomach", 0.07377140841348524], ["problems", 0.058891650851054134], ["after", 0.04469565423224996], ["bubbly", 0.040743797057739055], ["daily", 0.03195001137019752], ["wrong", 0.029574665641257783], ["have", 0.01928306547429832], ["almost", 0.018793903787700617], ["what", 0.01426832169833996]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["disorder", 44, 0.1876025737261375], ["Experienced", 0, 0.13243813914111527], ["odd", 22, 0.11671434508542397], ["Sleep", 38, 0.0924668521890993], ["last", 26, 0.055897551782313794], ["something", 12, 0.04553473822007592], ["night", 31, 0.03355443691476872]], 0, "Experienced something odd last night. Sleep disorder?", raw_div, true);
+            exp.show_raw_text([["diarrhea", 34, 0.07951460385058202], ["stomach", 70, 0.07377140841348524], ["problems", 7, 0.058891650851054134], ["after", 43, 0.04469565423224996], ["bubbly", 63, 0.040743797057739055], ["daily", 28, 0.03195001137019752], ["wrong", 95, 0.029574665641257783], ["have", 2, 0.01928306547429832], ["almost", 21, 0.018793903787700617], ["what", 79, 0.01426832169833996]], 0, "I have problems with almost daily diarrhea after dinners and a bubbly stomach, what am I doing wrong??", raw_div, true);
             
         </script>
         </body></html>
