@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divBM0W8ATKJ07M7LR"></div>
+        <div class="lime top_div" id="top_divXXPJH0I7OYZ0AR2"></div>
         
         <script>
-        var top_div = d3.select('#top_divBM0W8ATKJ07M7LR').classed('lime top_div', true);
+        var top_div = d3.select('#top_divXXPJH0I7OYZ0AR2').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.15464258193969727, 0.845357358455658]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9956089854240417, 0.004391037859022617]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["psychiatrist", -0.22469521655232974], ["you", 0.08855202397439967], ["this", -0.06159051845096989], ["What", 0.04325328768323112], ["about", 0.033767723780685176], ["think", 0.025607011349821802], ["do", 0.011888987079474306]], 1, exp_div);
+                exp.show([["disorder", 0.1876025737261375], ["Experienced", 0.13243813914111527], ["odd", 0.11671434508542397], ["Sleep", 0.0924668521890993], ["last", 0.055897551782313794], ["something", 0.04553473822007592], ["night", 0.03355443691476872]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["psychiatrist", 29, -0.22469521655232974], ["you", 8, 0.08855202397439967], ["this", 24, -0.06159051845096989], ["What", 0, 0.04325328768323112], ["about", 18, 0.033767723780685176], ["think", 12, 0.025607011349821802], ["do", 5, 0.011888987079474306]], 1, "What do you think about this psychiatrist?", raw_div, true);
+            exp.show_raw_text([["disorder", 44, 0.1876025737261375], ["Experienced", 0, 0.13243813914111527], ["odd", 22, 0.11671434508542397], ["Sleep", 38, 0.0924668521890993], ["last", 26, 0.055897551782313794], ["something", 12, 0.04553473822007592], ["night", 31, 0.03355443691476872]], 0, "Experienced something odd last night. Sleep disorder?", raw_div, true);
             
         </script>
         </body></html>

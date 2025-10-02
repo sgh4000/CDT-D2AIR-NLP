@@ -16,7 +16,7 @@ import lime
 from lime import lime_text
 from lime.lime_text import LimeTextExplainer
 from explainability import lime_test, make_predict_fn
-from pgd_attack import pgd_attack_embedded
+from pgd_attack import pgd_attack_embedded, pgd_attack_embedded_hyperrectangles
 from perturbations import create_perturbations
 from hyperrectangles import load_hyperrectangles
 import nltk
@@ -111,6 +111,16 @@ print(f'Accuracy on original positive only trained examples: {accuracy_train_adv
 print(f'Accuracy on original total trained examples: {accuracy_train_adv_pred:.4f}')
 
 n_samples = int(len(X_pos_train_PCA))
+
+#generating just attack data using the hyperrectangles
+pgd_dataset_hyper, pgd_labels_inside_hyper = pgd_attack_embedded_hyperrectangles(model_base, hyperrectangles, n_samples)
+y_hyper_pred = np.argmax(model_base.predict(pgd_dataset_hyper), axis=1)
+accuracy_hyper_pred = np.mean(y_hyper_pred == pgd_labels_inside_hyper)
+
+
+print(f'Accuracy on adversarial attack from hyper rectangle examples: {accuracy_hyper_pred:.4f}')
+
+
 model_adv_hyper = get_model()
 model_adv_hyper = adv_hyperrectangles_training(model_adv_hyper, train_base_dataset, test_base_dataset, hyperrectangles, n_samples)
 #lets evaluate on clean train data
