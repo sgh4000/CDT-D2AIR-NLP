@@ -62,10 +62,17 @@ def UMAP_investigate(X_emb_2d, Xs, y):
 
 
 def data_balance_display(Xtnp, Xtnn, Xtsp, Xtsn):
+    #plot each of the data selected on a bar chart and display number of samples for each
     labels = ['Medical Query Train', 'Non-medical Query Train', 'Medical Query Test', 'Non-medical Query Test']
     sizes = [len(Xtnp), len(Xtnn), len(Xtsp), len(Xtsn)]
+    colours = ["#7D2E7C", "#B75EB4", "#3E678E", '#64B5F6'] 
     plt.figure(figsize=(10, 6))
-    plt.bar(labels, sizes)
+    bars = plt.bar(labels, sizes, color = colours)
+    # Add value labels on top of each bar
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2, height + 0.5, str(height),
+                 ha='center', va='bottom', fontsize=10)
     title = "Number of Samples Within Each Category to Show Data Balance"
     plt.title(title)
     plt.ylabel("Number of Samples")
