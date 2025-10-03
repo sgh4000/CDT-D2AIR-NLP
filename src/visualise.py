@@ -79,13 +79,15 @@ def data_balance_display(Xtnp, Xtnn, Xtsp, Xtsn):
     plt.savefig(f"data/visualisation/{title}.png", dpi=300, bbox_inches='tight')
     plt.show()
 
-
-
 def print_cosine_sim_demo(Xembed, Xstring, Yclass):
+    #given the low silhouette score, it would be nice to probe how the cosine similarity metric works
+    #if we take 3 random queries, and find the five 'most similar' strings and see if it is way off as a sanity check
     n_queries = 3
     random_indices = np.random.choice(len(Xembed), size=n_queries, replace=False)
-
+    
+    #for each random index
     for query_idx in random_indices:
+        #find associated string
         query_vec = Xembed[query_idx]
 
         # Compute cosine similarity with all embeddings
@@ -96,16 +98,20 @@ def print_cosine_sim_demo(Xembed, Xstring, Yclass):
         closest_idx = closest_idx[closest_idx != query_idx]  # remove the query itself
 
         # Print results
-        print(f"\nQuery sentence: {Xstring[query_idx]}")
+        print(f"\nQuery sentence: {Xstring[query_idx]} (label={Yclass[query_idx]})")
         print("Top similar sentences:")
         for idx in closest_idx[::-1]:
             print(f"- {Xstring[idx]} (label={Yclass[idx]}, similarity={sim_scores[idx]:.3f})")
 
 def print_silhouette_score(X):
-    # --- Cluster in high-D space ---
+    #cluster the data in high dimensional space - in this case trying to do so in 2 clusters for the amount of classes we have
     kmeans_hd = KMeans(n_clusters=2, random_state=42)
+    #tries to fit each sample in data to the cluster it thinks it is in - will provide output of 0 or 1
     clusters_hd = kmeans_hd.fit_predict(X)
 
-    # --- Compute silhouette score ---
-    score = silhouette_score(X, clusters_hd, metric='cosine')  # cosine is better for embeddings
-    print(f"Silhouette Score (high-D embeddings): {score:.4f}")
+    #computes silhouette score to see how well the data is clustered
+    #gives value between -1 and 1: higher values are well matched to own cluster and far from others
+    #0 indicates some samples are on or near boundary
+    #-1 indicates some samples are in opposite cluster
+    score = silhouette_score(X, clusters_hd, metric='cosine')  # cosine rather than euclidean is better for embeddings
+    print(f"Silhouette Score: {score:.4f}")

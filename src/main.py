@@ -19,14 +19,20 @@ data_balance_display(X_pos_strings_train, X_neg_strings_train, X_pos_strings_tes
 #Like in ANTONIO, use SVD to align the entire dataset in the orientation based on positive medical query training data
 X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix= embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 
-# Vis_X_train_string = np.concatenate((X_pos_strings_train, X_neg_strings_train), axis=0)
-# Vis_X_train_embed_align = np.concatenate((X_pos_train_embed_align, X_neg_train_embed_align), axis=0)
-# Vis_X_test_embed_align = np.concatenate((X_pos_test_embed_align, X_neg_test_embed_align), axis=0)
-# Vis_Y_train = np.concatenate((Y_pos_class_train, Y_neg_class_train), axis=0)
-# Vis_Y_test = np.concatenate((Y_pos_class_test, Y_neg_class_test), axis=0)
+#Concatenate datasets for visualisation tasks - could do in another location but want flexibility
+Vis_X_train_string = np.concatenate((X_pos_strings_train, X_neg_strings_train), axis=0)
+Vis_X_train_embed_align = np.concatenate((X_pos_train_embed_align, X_neg_train_embed_align), axis=0)
+Vis_X_test_string = np.concatenate((X_pos_strings_test, X_neg_strings_test), axis=0)
+Vis_X_test_embed_align = np.concatenate((X_pos_test_embed_align, X_neg_test_embed_align), axis=0)
+Vis_Y_train = np.concatenate((Y_pos_class_train, Y_neg_class_train), axis=0)
+Vis_Y_test = np.concatenate((Y_pos_class_test, Y_neg_class_test), axis=0)
 
-# print_silhouette_score(Vis_X_train_embed_align)
-# print_cosine_sim_demo(Vis_X_train_embed_align, Vis_X_train_string, Vis_Y_train)
+#Silhouette score gives an indication of how separate the clusters - output between -1 to 1 and we want it to be as high as possible
+print_silhouette_score(Vis_X_train_embed_align)
+#this value near 0 indicates there are samples on the border of clusters
+#this next step I made to look at some examples of strings with a high cosine similarity as a sanity check
+print_cosine_sim_demo(Vis_X_train_embed_align, Vis_X_train_string, Vis_Y_train)
+#note that results from this indicate how embeddings don't seem to hold semantic meaning very well here - similarity is computed low for similar sentneces, or high with misclassing
 
 # tsne_title1 = "T-SNE of training data after embeddings and SVD"
 # tsne_display(Vis_X_train_embed_align, Vis_Y_train, tsne_title1)
