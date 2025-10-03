@@ -1,29 +1,14 @@
-import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.decomposition import PCA
 from data import pre_process, embed_and_align, embed_and_align_p, PCA_to_reduce_embeddings
 from train import get_model, train_base_model, adversarial_training, adv_hyperrectangles_training
 from metrics import print_metrics, confusion_matrix_display, generalisability_metric, robustness_metric
 from sentence_transformers import SentenceTransformer
-from tensorflow import keras
-import tensorflow as tf
-from sklearn.metrics import precision_score, recall_score, f1_score, roc_curve, roc_auc_score
-from sklearn.preprocessing import label_binarize
-import matplotlib.pyplot as plt
-import random
-import lime
-from lime import lime_text
-from lime.lime_text import LimeTextExplainer
 from explainability import lime_test, make_predict_fn
 from pgd_attack import pgd_attack_embedded, pgd_attack_embedded_hyperrectangles
 from perturbations import create_perturbations
 from hyperrectangles import load_hyperrectangles
 from visualise import tsne_display, UMAP_display, data_balance_display, print_cosine_sim_demo, print_silhouette_score, UMAP_investigate
-import nltk
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger_eng')
-import time
+
 
 X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test = pre_process()
 

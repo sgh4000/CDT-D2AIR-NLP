@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div5V6HXK1D6J8SW8L"></div>
+        <div class="lime top_div" id="top_divRSHU1RY3ZS99J3E"></div>
         
         <script>
-        var top_div = d3.select('#top_div5V6HXK1D6J8SW8L').classed('lime top_div', true);
+        var top_div = d3.select('#top_divRSHU1RY3ZS99J3E').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.992539644241333, 0.007460379041731358]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9412721991539001, 0.058727800846099854]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["Doctor", 0.35931340351915203], ["Ultrasound", 0.32798859618106885], ["should", 0.02925493225899669], ["go", 0.01729319799317241], ["this", 0.015946975510060957], ["an", 0.014995295443761705], ["exactly", 0.012002197900843939], ["suggested", 0.007535241212286435], ["I", 0.0066896440032316725], ["Where", -0.003986223923903574]], 0, exp_div);
+                exp.show([["heart", 0.32501325535946585], ["my", 0.2012782933304429], ["suddenly", 0.1820732310056293], ["during", 0.08737647842157448], ["drop", 0.08663899967121849], ["rate", -0.08045204644810866], ["of", 0.05344879423300188], ["run", 0.02764230416643082], ["part", 0.011012140835814602], ["first", -0.00873803442546784]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["Doctor", 0, 0.35931340351915203], ["Ultrasound", 20, 0.32798859618106885], ["should", 46, 0.02925493225899669], ["go", 55, 0.01729319799317241], ["this", 62, 0.015946975510060957], ["an", 17, 0.014995295443761705], ["exactly", 38, 0.012002197900843939], ["suggested", 7, 0.007535241212286435], ["I", 53, 0.0066896440032316725], ["Where", 32, -0.003986223923903574]], 0, "Doctor suggested an Ultrasound. Where exactly should I go for this?", raw_div, true);
+            exp.show_raw_text([["heart", 12, 0.32501325535946585], ["my", 9, 0.2012782933304429], ["my", 58, 0.2012782933304429], ["suddenly", 23, 0.1820732310056293], ["during", 37, 0.08737647842157448], ["drop", 32, 0.08663899967121849], ["rate", 18, -0.08045204644810866], ["of", 55, 0.05344879423300188], ["run", 61, 0.02764230416643082], ["part", 50, 0.011012140835814602], ["first", 44, -0.00873803442546784]], 0, "Why does my heart rate suddenly drop during first part of my run?", raw_div, true);
             
         </script>
         </body></html>
