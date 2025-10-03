@@ -39,14 +39,10 @@ def pgd_attack_epsilon(model_base, X_pos_train_PCA, Y_pos_class_train):
         
         # Project the adversarial example to ensure it's within epsilon-ball of the original image
         X_adv = tf.clip_by_value(X_adv, X_pos_train_PCA - epsilon, X_pos_train_PCA + epsilon)
-        
-        # Ensure the adversarial examples are within the valid input range [0, 1] commented out as only relevant for images
-        #questions to consider: are embeddings scaled, standardised or left raw, and what are the numeric ranges of the PCA features?
-        #X_adv = tf.clip_by_value(X_adv, 0.0, 1.0)
     
     return X_adv
 
-#only done on positive ones here but could do epsilon balls around all them?
+#only done on positive ones here like in ANTONIOß
 def pgd_attack_hyperrectangles(model, hyperrectangles, n_samples):
     #picking values based on Katya
     eps_multiplier = 1000
@@ -90,9 +86,4 @@ def pgd_attack_hyperrectangles(model, hyperrectangles, n_samples):
 
     pgd_dataset = np.asarray(pgd_dataset)
     pgd_labels_inside = np.full(len(pgd_dataset), 0)
-
-    # Convert the pgd generated inputs into tf datasets, shuffle and batch them
-    # pgd_dataset = tf.data.Dataset.from_tensor_slices((pgd_dataset, pgd_labels_inside))
-    # pgd_dataset = pgd_dataset.shuffle(buffer_size=1024).batch(batch_size)
-
     return pgd_dataset, pgd_labels_inside

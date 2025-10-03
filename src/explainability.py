@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -67,9 +66,6 @@ def lime_test(X_pos_strings_test, predict_fn):
 
     # Save interactive HTML
     exp.save_to_file('data/explainability/oi.html')
-
-
-    
     return
 
 
