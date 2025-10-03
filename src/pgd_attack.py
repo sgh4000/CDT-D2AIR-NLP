@@ -15,7 +15,7 @@ from lime import lime_text
 from lime.lime_text import LimeTextExplainer
 
 #only done on positive ones here but could do epsilon balls around all them?
-def pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train):
+def pgd_attack_epsilon(model_base, X_pos_train_PCA, Y_pos_class_train):
     #picking values based on Katya
     epsilon = 0.05
     alpha = 0.01
@@ -47,7 +47,7 @@ def pgd_attack_embedded(model_base, X_pos_train_PCA, Y_pos_class_train):
     return X_adv
 
 #only done on positive ones here but could do epsilon balls around all them?
-def pgd_attack_embedded_hyperrectangles(model, hyperrectangles, n_samples):
+def pgd_attack_hyperrectangles(model, hyperrectangles, n_samples):
     #picking values based on Katya
     eps_multiplier = 1000
     pgd_steps = 5

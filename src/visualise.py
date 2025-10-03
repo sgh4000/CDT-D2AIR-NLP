@@ -14,7 +14,7 @@ def tsne_display(X, y, title):
     tsne = TSNE(n_components=2, random_state=42)
     examples_2d = tsne.fit_transform(X)
 
-        # 0 = positive, 1 = negative
+    # 0 = positive, 1 = negative
     colors_dict = {0: '#b2182b', 1: '#2166ac'}  # dark red for positive, dark blue for negative
     colors = [colors_dict[label] for label in y]
 

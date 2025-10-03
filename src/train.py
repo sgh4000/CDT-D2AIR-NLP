@@ -7,7 +7,7 @@ from sentence_transformers import SentenceTransformer
 from tensorflow import keras
 import tensorflow as tf
 import time
-from pgd_attack import pgd_attack_embedded
+from pgd_attack import pgd_attack_epsilon, pgd_attack_hyperrectangles
 
 def get_model():
     #good to keep model defined separately, initialiser seed and input_size specified in here, could take out to allow lots of runs
@@ -56,7 +56,7 @@ def train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_tes
     return model_base, X_train, X_test, Y_train, Y_test, train_dataset, test_dataset
 
 
-def adversarial_training(model_adv, train_base_dataset, test_base_dataset):
+def adv_epsilon_training(model_adv, train_base_dataset, test_base_dataset):
     """
     Performs adversarial training with PGD adversarial examples.
     
@@ -88,7 +88,7 @@ def adversarial_training(model_adv, train_base_dataset, test_base_dataset):
         for step, (x_batch, y_batch) in enumerate(train_base_dataset):
             with tf.GradientTape() as tape:
                 # Generate adversarial examples using PGD
-                x_adv_batch = pgd_attack_embedded(model_adv, x_batch, y_batch)
+                x_adv_batch = pgd_attack_epsilon(model_adv, x_batch, y_batch)
                 
                 # Combine original and adversarial examples for training
                 combined_x = tf.concat([x_batch, x_adv_batch], axis=0)

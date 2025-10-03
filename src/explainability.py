@@ -17,8 +17,9 @@ import lime
 from lime import lime_text
 from lime.lime_text import LimeTextExplainer
 
+encoder = SentenceTransformer('all-MiniLM-L6-v2')
 
-def make_predict_fn(encoder, align_matrix, pca, model_base):
+def make_predict_fn(align_matrix, pca, model_base):
     """
     Returns a predict_fn that LIME can use, with all required dependencies baked in.
     """
@@ -65,7 +66,7 @@ def lime_test(X_pos_strings_test, predict_fn):
     print("LIME explanation:", lime_list)
 
     # Save interactive HTML
-    exp.save_to_file('data/oi.html')
+    exp.save_to_file('data/explainability/oi.html')
 
 
     
