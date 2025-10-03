@@ -15,7 +15,9 @@ X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_
 #View the balance of data, there appears to be nearly equal of each class which is beneficial for training
 data_balance_display(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 
-# X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix= embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
+# PLEASE BE AWARE THIS IS WHERE I SWITCH FROM TRAIN (P N) TEST (P N) TO POS (TN TS) NEG (TN TS) WATCH OUT
+#Like in ANTONIO, use SVD to align the entire dataset in the orientation based on positive medical query training data
+X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix= embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 
 # Vis_X_train_string = np.concatenate((X_pos_strings_train, X_neg_strings_train), axis=0)
 # Vis_X_train_embed_align = np.concatenate((X_pos_train_embed_align, X_neg_train_embed_align), axis=0)

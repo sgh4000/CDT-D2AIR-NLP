@@ -53,26 +53,23 @@ def pre_process():
     return X_pos_strings_train, Y_pos_class_train, X_pos_strings_test, Y_pos_class_test, X_neg_strings_train,  Y_neg_class_train, X_neg_strings_test, Y_neg_class_test
 
 #function which embeds as expected, and then also aligns according to SVD
-def embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test):
-    #embed all data - do I want to be able to switch this in and out?
+def embed_and_align(Xstn, Xntn, Xpts, Xnts):
     encoder = SentenceTransformer(f'all-MiniLM-L6-v2')
-    X_pos_train_embed = encoder.encode(X_pos_strings_train, show_progress_bar=False)
-    X_neg_train_embed = encoder.encode(X_neg_strings_train, show_progress_bar=False)
-    X_pos_test_embed = encoder.encode(X_pos_strings_test, show_progress_bar=False)
-    X_neg_test_embed = encoder.encode(X_neg_strings_test, show_progress_bar=False)
-    #concat here or no?
+    Xptn_embed = encoder.encode(Xstn, show_progress_bar=False)
+    Xntn_embed = encoder.encode(Xntn, show_progress_bar=False)
+    Xpts_embed = encoder.encode(Xpts, show_progress_bar=False)
+    Xnts_embed = encoder.encode(Xnts, show_progress_bar=False)
     
     #SVD matrix found only on positive set (which is most important part of the data) of training set, but apply rotation to all data
-    #is there a better way to do SVD?
-    u, s, vh = np.linalg.svd(a=X_pos_train_embed)
-    align_matrix = np.linalg.solve(a=vh, b=np.eye(len(X_pos_train_embed[0])))
+    u, s, vh = np.linalg.svd(a=Xptn_embed)
+    align_matrix = np.linalg.solve(a=vh, b=np.eye(len(Xptn_embed[0])))
 
     #perform alignments
-    X_pos_train_embed_align = np.matmul(X_pos_train_embed, align_matrix)
-    X_neg_train_embed_align = np.matmul(X_neg_train_embed, align_matrix)
-    X_pos_test_embed_align = np.matmul(X_pos_test_embed, align_matrix)
-    X_neg_test_embed_align = np.matmul(X_neg_test_embed, align_matrix)
-    return X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix
+    Xptn_embed_align = np.matmul(Xptn_embed, align_matrix)
+    Xntn_embed_align = np.matmul(Xntn_embed, align_matrix)
+    Xpts_embed_align = np.matmul(Xpts_embed, align_matrix)
+    Xnts_embed_align = np.matmul(Xnts_embed, align_matrix)
+    return Xptn_embed_align, Xpts_embed_align, Xntn_embed_align, Xnts_embed_align, align_matrix
 
 #function which embeds as expected, and then also aligns according to SVD
 def embed_and_align_p(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test, align_matrix):
