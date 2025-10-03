@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divNYV0S5WXMA3BN7C"></div>
+        <div class="lime top_div" id="top_div5V6HXK1D6J8SW8L"></div>
         
         <script>
-        var top_div = d3.select('#top_divNYV0S5WXMA3BN7C').classed('lime top_div', true);
+        var top_div = d3.select('#top_div5V6HXK1D6J8SW8L').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.993864893913269, 0.0061351521871984005]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.992539644241333, 0.007460379041731358]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["diarrhea", 0.07951460385058202], ["stomach", 0.07377140841348524], ["problems", 0.058891650851054134], ["after", 0.04469565423224996], ["bubbly", 0.040743797057739055], ["daily", 0.03195001137019752], ["wrong", 0.029574665641257783], ["have", 0.01928306547429832], ["almost", 0.018793903787700617], ["what", 0.01426832169833996]], 0, exp_div);
+                exp.show([["Doctor", 0.35931340351915203], ["Ultrasound", 0.32798859618106885], ["should", 0.02925493225899669], ["go", 0.01729319799317241], ["this", 0.015946975510060957], ["an", 0.014995295443761705], ["exactly", 0.012002197900843939], ["suggested", 0.007535241212286435], ["I", 0.0066896440032316725], ["Where", -0.003986223923903574]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["diarrhea", 34, 0.07951460385058202], ["stomach", 70, 0.07377140841348524], ["problems", 7, 0.058891650851054134], ["after", 43, 0.04469565423224996], ["bubbly", 63, 0.040743797057739055], ["daily", 28, 0.03195001137019752], ["wrong", 95, 0.029574665641257783], ["have", 2, 0.01928306547429832], ["almost", 21, 0.018793903787700617], ["what", 79, 0.01426832169833996]], 0, "I have problems with almost daily diarrhea after dinners and a bubbly stomach, what am I doing wrong??", raw_div, true);
+            exp.show_raw_text([["Doctor", 0, 0.35931340351915203], ["Ultrasound", 20, 0.32798859618106885], ["should", 46, 0.02925493225899669], ["go", 55, 0.01729319799317241], ["this", 62, 0.015946975510060957], ["an", 17, 0.014995295443761705], ["exactly", 38, 0.012002197900843939], ["suggested", 7, 0.007535241212286435], ["I", 53, 0.0066896440032316725], ["Where", 32, -0.003986223923903574]], 0, "Doctor suggested an Ultrasound. Where exactly should I go for this?", raw_div, true);
             
         </script>
         </body></html>

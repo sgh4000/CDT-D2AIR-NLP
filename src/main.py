@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
 from data import pre_process, embed_and_align, embed_and_align_p, PCA_to_reduce_embeddings
 from train import get_model, train_base_model, adversarial_training, adv_hyperrectangles_training
-from metrics import print_metrics
+from metrics import print_metrics, confusion_matrix_display, generalisability_metric, robustness_metric
 from sentence_transformers import SentenceTransformer
 from tensorflow import keras
 import tensorflow as tf
@@ -70,6 +70,8 @@ model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dat
 # print(prediction_probs)
 
 print_metrics(model_base, X_base_test, Y_base_test)
+cm = confusion_matrix_display(model_base, X_base_test, Y_base_test)
+generalisability_metric(model_base, X_base_train, Y_base_train, X_base_test, Y_base_test)
 #need encoder here for LIME but could also but this into the beginning and for the embeddings so different ones can be tried!
 encoder = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -93,7 +95,7 @@ accuracy_train = np.mean(y_pred_train == Y_pos_class_train)
 
 print(f'Accuracy on adversarial examples: {accuracy_adv:.4f}')
 print(f'Accuracy on original positive only trained examples: {accuracy_train:.4f}')
-
+robustness_metric(model_base, X_base_train, Y_base_train, X_adv_test, Y_pos_class_train)
 #lets now do perturbations to build the other hyper rectangles
 
 # print(X_pos_strings_train.shape)
@@ -146,6 +148,7 @@ n_samples = int(len(X_pos_train_PCA))
 pgd_dataset_hyper, pgd_labels_inside_hyper = pgd_attack_embedded_hyperrectangles(model_base, hyperrectangles, n_samples)
 y_hyper_pred = np.argmax(model_base.predict(pgd_dataset_hyper), axis=1)
 accuracy_hyper_pred = np.mean(y_hyper_pred == pgd_labels_inside_hyper)
+robustness_metric(model_base, X_base_train, Y_base_train, pgd_dataset_hyper, pgd_labels_inside_hyper)
 
 
 print(f'Accuracy on adversarial attack from hyper rectangle examples: {accuracy_hyper_pred:.4f}')
