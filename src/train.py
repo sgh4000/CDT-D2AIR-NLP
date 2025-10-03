@@ -11,6 +11,9 @@ from pgd_attack import pgd_attack_embedded
 
 def get_model():
     #good to keep model defined separately, initialiser seed and input_size specified in here, could take out to allow lots of runs
+    #important to note that this model outputs logits as a linear activation function is used
+    #could use another to get probabilities out but note that the metric functions will need rewriting
+    #believe that ANTONIO checks for logits which is helpful, could incorporate this
     input_size = 30
     initializer = tf.keras.initializers.GlorotUniform(seed=42)
     inputs = keras.Input(shape=(input_size,), name="embeddings")
@@ -21,24 +24,27 @@ def get_model():
     return model
 
 def train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test):
-    #select what you would like:
+    #select what you would like, based from Katya Lab and ANTONIO code
     batch_size = 64
     epochs = 30
     
-    #we want to combine the X data and the Y data - use concatenate so that 1D Y data doesn't get turned into column vectors which won't like later functions
+    #we want to combine the X data and the Y data
+    #use concatenate so that 1D Y data doesn't get turned into column vectors - an issue for functions
     X_train = np.concatenate((X_pos_train_PCA, X_neg_train_PCA), axis=0)
     X_test = np.concatenate((X_pos_test_PCA, X_neg_test_PCA), axis=0)
     Y_train = np.concatenate((Y_pos_class_train, Y_neg_class_train), axis=0)
     Y_test = np.concatenate((Y_pos_class_test, Y_neg_class_test), axis=0)
 
+    #from_tensor_slices automatically pairs features with correct labels so it can be directly put into model.fit
     train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train))
     test_dataset = tf.data.Dataset.from_tensor_slices((X_test, Y_test))
 
-    #trains on batches and uses test dataset for validation data, 
-    #not great practice maybe worth trying to implement k-folds especially if doing hyperparameter tuning
+    #trains on batches and uses test dataset for validation data
+    #worth trying to implement k-folds especially if doing hyperparameter tuning so that have separate validation data
     train_dataset = train_dataset.shuffle(buffer_size=1024).batch(batch_size)
     test_dataset = test_dataset.batch(batch_size)
     
+    #telling the function that logits are output from model so that it can apply softmax to compute cross-entropy
     optimizer = tf.keras.optimizers.legacy.Adam()
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     accuracy_fn = tf.keras.metrics.SparseCategoricalAccuracy()

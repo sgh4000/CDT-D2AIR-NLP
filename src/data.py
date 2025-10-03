@@ -90,11 +90,12 @@ def embed_and_align_p(X_pos_strings_train, X_neg_strings_train, X_pos_strings_te
     return X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align
 
 def PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align):
-    #input size was selected as 30, but wonder how this varies!
+    #input size was selected as 30, but could tune this to see which produces the best resylts
     input_size = 30
-    #we want to add up all of the data in the training set and perform PCA on all of it (for some reason ANTONIO does test set too but isn't that data leakage?)
+    #we want to add up all of the data in the training set and perform PCA on all of it to find the right fit
+    # Be aware, ANTONIO does test set too but this then includes variance from test data, which I think would be data leakage
     all_x_for_train = np.vstack([X_pos_train_embed_align, X_neg_train_embed_align])
-    # PCA data
+    # PCA found
     data_pca = PCA(n_components=input_size).fit(all_x_for_train)
 
     #transforms each bit separately

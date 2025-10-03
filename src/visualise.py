@@ -14,9 +14,15 @@ def tsne_display(X, y, title):
     tsne = TSNE(n_components=2, random_state=42)
     examples_2d = tsne.fit_transform(X)
 
+        # 0 = positive, 1 = negative
+    colors_dict = {0: '#b2182b', 1: '#2166ac'}  # dark red for positive, dark blue for negative
+    colors = [colors_dict[label] for label in y]
+
     plt.figure(figsize=(10,6))
-    plt.scatter(examples_2d[:,0], examples_2d[:,1], c=y[:], cmap='coolwarm')
-    plt.colorbar(label='Label')
+    plt.scatter(examples_2d[:,0], examples_2d[:,1], c=colors, alpha=0.7)
+    red_patch = mpatches.Patch(color='#b2182b', label='Positive')
+    blue_patch = mpatches.Patch(color='#2166ac', label='Negative')
+    plt.legend(handles=[red_patch, blue_patch])
     plt.title(title)
     plt.savefig(f"data/visualisation/{title}.png", dpi=300, bbox_inches='tight')
     plt.show()
@@ -58,7 +64,7 @@ def UMAP_investigate(X_emb_2d, Xs, y):
 
     #print out some examples of the misclustered samples to see if there is semantic ambiguity
     mis_idx = misclustered.index
-    n_queries = 10
+    n_queries = 20
     random_indices = np.random.choice(mis_idx, size=min(n_queries, len(mis_idx)), replace=False)
 
    

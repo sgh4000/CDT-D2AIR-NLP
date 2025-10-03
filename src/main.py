@@ -37,25 +37,29 @@ print_cosine_sim_demo(Vis_X_train_embed_align, Vis_X_train_string, Vis_Y_train)
 
 #Two popular methods of visually inspecting high-D data are t-SNE and UMAP, for completeness I included both, but for speed and to see how distance might relate to meaning will only show UMAP
 #Be aware that UMAP assumes embedding data lies on a manifold and this may not be accurate
-# tsne_title1 = "T-SNE of training data after embeddings and SVD"
-# tsne_display(Vis_X_train_embed_align, Vis_Y_train, tsne_title1)
+tsne_title1 = "T-SNE of training data after embeddings and SVD"
+tsne_display(Vis_X_train_embed_align, Vis_Y_train, tsne_title1)
 umap_title1 = "UMAP of training data after embeddings and SVD"
 UMAP_output = UMAP_display(Vis_X_train_embed_align, Vis_Y_train, umap_title1)
 
 UMAP_investigate(UMAP_output, Vis_X_train_string, Vis_Y_train)
+#from the investigation it is clear there is a little bit of ambiguity in whether something is a medical query, bodily query, formed like a question etc
 
-# X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca1 = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
+#Based on ANTONIO code, a PCA was then performed to reduce the dimensionality of the data
+#this is common in embeddings, but it would be useful to visualise the variance in a graph, or tune this to see what produces the best accuracy
+X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca1 = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
 
-# Vis_X_train_PCA = np.concatenate((X_pos_train_PCA, X_neg_train_PCA), axis=0)
-# Vis_X_test_PCA = np.concatenate((X_pos_test_PCA, X_neg_test_PCA), axis=0)
-# tsne_title2 = "T-SNE of training data after PCA"
-# tsne_display(Vis_X_train_PCA, Vis_Y_train, tsne_title2)
-# umap_title2 = "UMAP of training data after PCA"
-# UMAP_display(Vis_X_train_PCA, Vis_Y_train, umap_title2)
+#could visualise how this affects the UMAP and t-SNE plots - commented out here for brevity
+Vis_X_train_PCA = np.concatenate((X_pos_train_PCA, X_neg_train_PCA), axis=0)
+Vis_X_test_PCA = np.concatenate((X_pos_test_PCA, X_neg_test_PCA), axis=0)
+tsne_title2 = "T-SNE of training data after PCA"
+tsne_display(Vis_X_train_PCA, Vis_Y_train, tsne_title2)
+umap_title2 = "UMAP of training data after PCA"
+UMAP_display(Vis_X_train_PCA, Vis_Y_train, umap_title2)
 
-
-# get_model()
-# model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
+#we pick the model we would like, and train a base model! Based off of ANTONIO and Katya's Lab
+get_model()
+model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
 
 
 # #lets look at a few of these
