@@ -17,6 +17,7 @@ data_balance_display(X_pos_strings_train, X_neg_strings_train, X_pos_strings_tes
 
 # PLEASE BE AWARE THIS IS WHERE I SWITCH FROM TRAIN (P N) TEST (P N) TO POS (TN TS) NEG (TN TS) WATCH OUT
 #Like in ANTONIO, use SVD to align the entire dataset in the orientation based on positive medical query training data
+#used same encoder as ANTONIO, but important to edit inside this function AND within this script so that LIME is correct, if changed
 X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align, align_matrix= embed_and_align(X_pos_strings_train, X_neg_strings_train, X_pos_strings_test, X_neg_strings_test)
 
 #Concatenate datasets for visualisation tasks - could do in another location but want flexibility
@@ -34,11 +35,14 @@ print_silhouette_score(Vis_X_train_embed_align)
 print_cosine_sim_demo(Vis_X_train_embed_align, Vis_X_train_string, Vis_Y_train)
 #note that results from this indicate how embeddings don't seem to hold semantic meaning very well here - similarity is computed low for similar sentneces, or high with misclassing
 
+#Two popular methods of visually inspecting high-D data are t-SNE and UMAP, for completeness I included both, but for speed and to see how distance might relate to meaning will only show UMAP
+#Be aware that UMAP assumes embedding data lies on a manifold and this may not be accurate
 # tsne_title1 = "T-SNE of training data after embeddings and SVD"
 # tsne_display(Vis_X_train_embed_align, Vis_Y_train, tsne_title1)
-# umap_title1 = "UMAP of training data after embeddings and SVD"
-# UMAP_output = UMAP_display(Vis_X_train_embed_align, Vis_Y_train, umap_title1)
-# UMAP_investigate(UMAP_output, Vis_X_train_string, Vis_Y_train)
+umap_title1 = "UMAP of training data after embeddings and SVD"
+UMAP_output = UMAP_display(Vis_X_train_embed_align, Vis_Y_train, umap_title1)
+
+UMAP_investigate(UMAP_output, Vis_X_train_string, Vis_Y_train)
 
 # X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca1 = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
 

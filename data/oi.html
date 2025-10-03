@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divRSHU1RY3ZS99J3E"></div>
+        <div class="lime top_div" id="top_divM5S2RXCO1OCBCPP"></div>
         
         <script>
-        var top_div = d3.select('#top_divRSHU1RY3ZS99J3E').classed('lime top_div', true);
+        var top_div = d3.select('#top_divM5S2RXCO1OCBCPP').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9412721991539001, 0.058727800846099854]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.9966934323310852, 0.0033066379837691784]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["heart", 0.32501325535946585], ["my", 0.2012782933304429], ["suddenly", 0.1820732310056293], ["during", 0.08737647842157448], ["drop", 0.08663899967121849], ["rate", -0.08045204644810866], ["of", 0.05344879423300188], ["run", 0.02764230416643082], ["part", 0.011012140835814602], ["first", -0.00873803442546784]], 0, exp_div);
+                exp.show([["rashes", 0.2711392583502063], ["having", 0.10984115215188921], ["spontaneous", 0.10834101673138184], ["face", 0.10127756163115503], ["what", 0.06767560877125754], ["My", 0.05598844290892061], ["knows", 0.04393913165330665], ["s", 0.03844185461245448], ["is", 0.026705304969290425], ["her", -0.019357612015857777]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["heart", 12, 0.32501325535946585], ["my", 9, 0.2012782933304429], ["my", 58, 0.2012782933304429], ["suddenly", 23, 0.1820732310056293], ["during", 37, 0.08737647842157448], ["drop", 32, 0.08663899967121849], ["rate", 18, -0.08045204644810866], ["of", 55, 0.05344879423300188], ["run", 61, 0.02764230416643082], ["part", 50, 0.011012140835814602], ["first", 44, -0.00873803442546784]], 0, "Why does my heart rate suddenly drop during first part of my run?", raw_div, true);
+            exp.show_raw_text([["rashes", 32, 0.2711392583502063], ["having", 13, 0.10984115215188921], ["spontaneous", 20, 0.10834101673138184], ["face", 46, 0.10127756163115503], ["what", 65, 0.06767560877125754], ["My", 0, 0.05598844290892061], ["knows", 59, 0.04393913165330665], ["s", 70, 0.03844185461245448], ["is", 10, 0.026705304969290425], ["her", 42, -0.019357612015857777]], 0, "My friend is having spontaneous rashes on her face. Anyone knows what's going on?", raw_div, true);
             
         </script>
         </body></html>
