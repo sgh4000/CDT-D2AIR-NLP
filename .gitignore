@@ -15,4 +15,5 @@ build/
 dist/
 *.egg-info/
 .eggs/
+.DS_Store
 
