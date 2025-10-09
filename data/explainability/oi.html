@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div2SE1BWQ8ZK0ZE28"></div>
+        <div class="lime top_div" id="top_divR1K4UE3EU8S59O0"></div>
         
         <script>
-        var top_div = d3.select('#top_div2SE1BWQ8ZK0ZE28').classed('lime top_div', true);
+        var top_div = d3.select('#top_divR1K4UE3EU8S59O0').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.6533666849136353, 0.34663328528404236]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.4157041609287262, 0.5842958092689514]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["ears", 0.512341766441466], ["my", 0.19576678598804254], ["of", 0.08079329779146954], ["I", 0.03327940859721059], ["get", 0.03112765730831642], ["How", 0.030206758417768573], ["bugs", 0.02785407044216454], ["out", -0.02550616263409296], ["do", 0.005330535103040521]], 0, exp_div);
+                exp.show([["hurts", -0.16782959701935204], ["sure", -0.1574067761759677], ["I", -0.04045455658787489], ["not", 0.025656194788680524], ["m", -0.021515394201590727], ["what", 0.004158969627319686]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["ears", 28, 0.512341766441466], ["my", 25, 0.19576678598804254], ["of", 22, 0.08079329779146954], ["I", 7, 0.03327940859721059], ["get", 9, 0.03112765730831642], ["How", 0, 0.030206758417768573], ["bugs", 13, 0.02785407044216454], ["out", 18, -0.02550616263409296], ["do", 4, 0.005330535103040521]], 0, "How do I get bugs out of my ears?", raw_div, true);
+            exp.show_raw_text([["hurts", 18, -0.16782959701935204], ["sure", 8, -0.1574067761759677], ["I", 0, -0.04045455658787489], ["not", 4, 0.025656194788680524], ["m", 2, -0.021515394201590727], ["what", 13, 0.004158969627319686]], 1, "I'm not sure what hurts", raw_div, true);
             
         </script>
         </body></html>
