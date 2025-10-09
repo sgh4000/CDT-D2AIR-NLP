@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divR1K4UE3EU8S59O0"></div>
+        <div class="lime top_div" id="top_div2GGFW1H6P7LNQR7"></div>
         
         <script>
-        var top_div = d3.select('#top_divR1K4UE3EU8S59O0').classed('lime top_div', true);
+        var top_div = d3.select('#top_div2GGFW1H6P7LNQR7').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.4157041609287262, 0.5842958092689514]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.016532042995095253, 0.9834679365158081]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["hurts", -0.16782959701935204], ["sure", -0.1574067761759677], ["I", -0.04045455658787489], ["not", 0.025656194788680524], ["m", -0.021515394201590727], ["what", 0.004158969627319686]], 1, exp_div);
+                exp.show([["cannons", 0.07117233183408724], ["having", -0.04501155556609814], ["Anyone", 0.009727062090228573], ["with", 0.007877930609480064], ["issues", 0.007160853518507788], ["German", 0.004741653880340527]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["hurts", 18, -0.16782959701935204], ["sure", 8, -0.1574067761759677], ["I", 0, -0.04045455658787489], ["not", 4, 0.025656194788680524], ["m", 2, -0.021515394201590727], ["what", 13, 0.004158969627319686]], 1, "I'm not sure what hurts", raw_div, true);
+            exp.show_raw_text([["cannons", 33, 0.07117233183408724], ["having", 7, -0.04501155556609814], ["Anyone", 0, 0.009727062090228573], ["with", 21, 0.007877930609480064], ["issues", 14, 0.007160853518507788], ["German", 26, 0.004741653880340527]], 1, "Anyone having issues with German cannons?", raw_div, true);
             
         </script>
         </body></html>

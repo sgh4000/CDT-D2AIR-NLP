@@ -27,7 +27,9 @@ def make_predict_fn(align_matrix, pca, model_base):
         embeds_align = np.matmul(embeds, align_matrix)
         embeds_PCA = pca.transform(embeds_align)
         logits = model_base.predict(embeds_PCA)
-        probs = tf.nn.softmax(logits, axis=1).numpy()
+        exp_logits = np.exp(logits)
+        probs = exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
+
         return probs
     
     return predict_fn
@@ -42,17 +44,19 @@ def lime_test(X_pos_strings_test, predict_fn):
     random_idx = random.randint(0, len(X_pos_strings_test) - 1)
     example_text = X_pos_strings_test[random_idx]  # <-- raw string
 
+    probs = predict_fn([example_text])[0]
+    predicted_class = int(np.argmax(probs))
 
     # 3. Generate explanation
     exp = explainer.explain_instance(
         example_text,
         predict_fn,        # your wrapped function that returns probabilities
         num_features=10,   # number of words to show in explanation
-        top_labels=1       # only explain the top predicted class
+        top_labels=2
     )
+    # print("exp local exp:",exp.local_exp)
 
-    probs = predict_fn([example_text])[0]
-    predicted_class = np.argmax(probs)
+
 
     print(f"Random index: {random_idx}")
     print(f"Example text: {example_text}")
@@ -64,8 +68,9 @@ def lime_test(X_pos_strings_test, predict_fn):
     lime_list = exp.as_list(label=predicted_class)
     print("LIME explanation:", lime_list)
 
-    # Save interactive HTML
+    # # Save interactive HTML - but rendering bug!
     exp.save_to_file('data/explainability/oi.html')
+
     return
 
 

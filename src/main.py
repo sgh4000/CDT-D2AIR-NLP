@@ -55,13 +55,13 @@ UMAP_investigate(UMAP_output, Vis_X_train_string, Vis_Y_train)
 #this is common in embeddings, but it would be useful to visualise the variance in a graph, or tune this to see what produces the best accuracy
 X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, data_pca1 = PCA_to_reduce_embeddings(X_pos_train_embed_align, X_pos_test_embed_align, X_neg_train_embed_align, X_neg_test_embed_align)
 
-#could visualise how this affects the UMAP and t-SNE plots - commented out here for brevity
-Vis_X_train_PCA = np.concatenate((X_pos_train_PCA, X_neg_train_PCA), axis=0)
-Vis_X_test_PCA = np.concatenate((X_pos_test_PCA, X_neg_test_PCA), axis=0)
-# tsne_title2 = "T-SNE of training data after PCA"
-# tsne_display(Vis_X_train_PCA, Vis_Y_train, tsne_title2)
-umap_title2 = "UMAP of training data after PCA"
-UMAP_display(Vis_X_train_PCA, Vis_Y_train, umap_title2)
+# #could visualise how this affects the UMAP and t-SNE plots - commented out here for brevity
+# Vis_X_train_PCA = np.concatenate((X_pos_train_PCA, X_neg_train_PCA), axis=0)
+# Vis_X_test_PCA = np.concatenate((X_pos_test_PCA, X_neg_test_PCA), axis=0)
+# # tsne_title2 = "T-SNE of training data after PCA"
+# # tsne_display(Vis_X_train_PCA, Vis_Y_train, tsne_title2)
+# umap_title2 = "UMAP of training data after PCA"
+# UMAP_display(Vis_X_train_PCA, Vis_Y_train, umap_title2)
 
 
 ##################
@@ -71,8 +71,6 @@ UMAP_display(Vis_X_train_PCA, Vis_Y_train, umap_title2)
 #we pick the model we would like, and train a base model! Based off of ANTONIO and Katya's Lab
 get_model()
 model_base, X_base_train, X_base_test, Y_base_train, Y_base_test, train_base_dataset, test_base_dataset = train_base_model(X_pos_train_PCA, X_pos_test_PCA, X_neg_train_PCA, X_neg_test_PCA, Y_pos_class_train, Y_pos_class_test, Y_neg_class_train, Y_neg_class_test)
-
-
 
 #################
 #### Metrics ####
@@ -97,7 +95,7 @@ generalisability_metric(model_base, X_base_train, Y_base_train, X_base_test, Y_b
 #if anything is changed in model pipeline please review explainability script!
 
 predict_fn = make_predict_fn(align_matrix, data_pca1, model_base)
-lime_test(X_pos_strings_test, predict_fn)
+lime_test(Vis_X_test_string, predict_fn)
 
 
 ############################

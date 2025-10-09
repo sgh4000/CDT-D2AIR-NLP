@@ -42,7 +42,7 @@ def print_metrics(model, X_test, Y_test):
     tpr = dict()
     roc_auc = dict()
 
-    y_score = y_pred_prob_softmax[:,1]
+    y_score = y_pred_prob_softmax[:,0]
 
     fpr, tpr, thresholds = roc_curve(Y_test, y_score, pos_label=0)
     roc_auc = roc_auc_score(Y_test, y_score)
