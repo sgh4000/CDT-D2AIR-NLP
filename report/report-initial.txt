@@ -6,3 +6,8 @@ https://advanced.onlinelibrary.wiley.com/doi/full/10.1002/aisy.202400304
 Commentary on explainable artificial intelligence methods: SHAP and LIME
 https://www.researchgate.net/publication/370495149_Commentary_on_explainable_artificial_intelligence_methods_SHAP_and_LIME
 
+LLM-based attack, maintaining semantic meaning
+https://arxiv.org/pdf/2311.11861
+
+Blog explaining adversarial attacks from the NLP Perspective
+https://www.cl.uni-heidelberg.de/nlpgroup/blog/2019-09-20_1_adversarial_training
