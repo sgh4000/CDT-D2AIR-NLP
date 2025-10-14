@@ -11,6 +11,11 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, precision_s
 from sklearn.preprocessing import label_binarize
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_validate
+import random
+#set seeds for reprodicibility
+random.seed(42)
+np.random.seed(42)
+tf.random.set_seed(42)
 
 def print_metrics(model, X_test, Y_test):
     # Get predicted probabilities for all classes
@@ -41,11 +46,11 @@ def print_metrics(model, X_test, Y_test):
     fpr = dict()
     tpr = dict()
     roc_auc = dict()
-
+    print(y_pred_prob_softmax)
     y_score = y_pred_prob_softmax[:,0]
 
     fpr, tpr, thresholds = roc_curve(Y_test, y_score, pos_label=0)
-    roc_auc = roc_auc_score(Y_test, y_score)
+    roc_auc = 1 - roc_auc_score(Y_test, y_score) #need 1 - as automatically it assumed region of interest is 1, not 0
     print(f"ROC score for positive medical query class: {roc_auc}")
 
     # Plot the ROC curve for each class

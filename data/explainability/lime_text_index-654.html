@@ -37089,25 +37089,28 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div2GGFW1H6P7LNQR7"></div>
+        <div class="lime top_div" id="top_divA2XAY7ELHNTIEAK"></div>
         
         <script>
-        var top_div = d3.select('#top_div2GGFW1H6P7LNQR7').classed('lime top_div', true);
+        var top_div = d3.select('#top_divA2XAY7ELHNTIEAK').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.016532042995095253, 0.9834679365158081]);
+            var pp = new lime.PredictProba(pp_svg, ["medical query", "not medical query"], [0.0007437702151946723, 0.9992562532424927]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["medical query", "not medical query"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["cannons", 0.07117233183408724], ["having", -0.04501155556609814], ["Anyone", 0.009727062090228573], ["with", 0.007877930609480064], ["issues", 0.007160853518507788], ["German", 0.004741653880340527]], 1, exp_div);
+                exp.show([["new", 0.000664130585796053], ["mods", 0.000595819434875909], ["some", 0.0005532937796274104], ["Minecraft", 0.0005194179494590694], ["What", 0.0004547622206120256], ["to", 0.0002954513823083484], ["are", -0.0002739959892746037], ["PC", -0.00015200333336781008], ["for", -0.00010833067820970743], ["essential", -1.4681794632261302e-05]], 1, exp_div);
+                
+                exp_div = top_div.append('div').classed('lime explanation', true);
+                exp.show([["new", -0.0006641287108542427], ["mods", -0.0005958177874888109], ["some", -0.0005532976315898106], ["Minecraft", -0.0005194143096232277], ["What", -0.0004547632705562376], ["to", -0.0002954544938820139], ["are", 0.0002739958686478579], ["PC", 0.00015200696867976224], ["for", 0.00010832873147633215], ["essential", 1.4679852956551179e-05]], 0, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["cannons", 33, 0.07117233183408724], ["having", 7, -0.04501155556609814], ["Anyone", 0, 0.009727062090228573], ["with", 21, 0.007877930609480064], ["issues", 14, 0.007160853518507788], ["German", 26, 0.004741653880340527]], 1, "Anyone having issues with German cannons?", raw_div, true);
+            exp.show_raw_text([["new", 41, 0.000664130585796053], ["mods", 24, 0.000595819434875909], ["some", 9, 0.0005532937796274104], ["Minecraft", 51, 0.0005194179494590694], ["What", 0, 0.0004547622206120256], ["to", 45, 0.0002954513823083484], ["are", 5, -0.0002739959892746037], ["PC", 48, -0.00015200333336781008], ["for", 29, -0.00010833067820970743], ["essential", 14, -1.4681794632261302e-05]], 1, "What are some essential mods for someone new to PC Minecraft?", raw_div, true);
             
         </script>
         </body></html>

@@ -8,6 +8,11 @@ from tensorflow import keras
 import tensorflow as tf
 import time
 from pgd_attack import pgd_attack_epsilon, pgd_attack_hyperrectangles
+import random
+#set seeds for reprodicibility
+random.seed(42)
+np.random.seed(42)
+tf.random.set_seed(42)
 
 def get_model():
     #good to keep model defined separately, initialiser seed and input_size specified in here, could take out to allow lots of runs

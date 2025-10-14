@@ -13,6 +13,11 @@ import random
 import lime
 from lime import lime_text
 from lime.lime_text import LimeTextExplainer
+import random
+#set seeds for reprodicibility
+random.seed(42)
+np.random.seed(42)
+tf.random.set_seed(42)
 
 #only done on positive ones here but could do epsilon balls around all them?
 def pgd_attack_epsilon(model_base, X_pos_train_PCA, Y_pos_class_train):

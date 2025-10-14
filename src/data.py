@@ -3,6 +3,10 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
 from sentence_transformers import SentenceTransformer
+import random
+#set seeds for reprodicibility
+random.seed(42)
+np.random.seed(42)
 
 def pre_process():
     #Haven't included severity levels - scope for future

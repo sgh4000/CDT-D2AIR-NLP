@@ -9,6 +9,11 @@ import os
 from sentence_transformers import SentenceTransformer
 from nltk.stem.wordnet import WordNetLemmatizer
 from random import randint, seed
+import random
+#set seeds for reprodicibility
+random.seed(42)
+np.random.seed(42)
+
 
 def create_perturbations(Xptn, Yptn, Xntn, Yntn, Xpts, Ypts, Xnts, Ynts, perturbation):
     if perturbation == 'character':
